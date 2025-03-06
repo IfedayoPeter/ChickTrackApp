@@ -1,0 +1,6 @@
+@ChickTrack.API_HostAddress = http://localhost:5111
+
+GET {{ChickTrack.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,254 @@
+﻿namespace Lagetronix.Rapha.Base.Common.Repositories.Implementations;
+
+public abstract class MSSQLBaseRepository<T, I> : IMSSQLRepository<T, I>
+    where T : BaseEntity<I>
+{
+    private readonly IApplicationDbContext _context;
+
+    protected MSSQLBaseRepository(IApplicationDbContext context) => _context = context ?? throw new ArgumentNullException(nameof(context));
+
+    #region CRUD Operations
+
+    public virtual async Task<IList<T>> GetAllAsync()
+    {
+        return await _context.Set<T>().ToListAsync();
+    }
+
+
+    public async Task<IList<T>> GetAllAsync(
+    string search = null,
+    string filter = null,
+    int page = 1,
+    int pageSize = 10)
+    {
+        IQueryable<T> query = _context.Set<T>();
+
+        // Dynamically include all navigation properties
+        var navigationProperties = typeof(T).GetProperties()
+            .Where(prop => typeof(IEnumerable<object>).IsAssignableFrom(prop.PropertyType) ||
+                           (prop.PropertyType.IsClass && prop.PropertyType != typeof(string)));
+
+        foreach (var navigationProperty in navigationProperties)
+        {
+            query = query.Include(navigationProperty.Name);
+        }
+
+        // Apply filtering based on the search term
+        if (!string.IsNullOrEmpty(filter))
+        {
+            try
+            {
+                var filterParts = filter.Split('=', StringSplitOptions.TrimEntries);
+                if (filterParts.Length == 2)
+                {
+                    var propertyName = filterParts[0];
+                    var propertyValue = filterParts[1];
+
+                    var parameter = Expression.Parameter(typeof(T), "x");
+                    var property = Expression.Property(parameter, propertyName);
+                    var propertyType = property.Type;
+
+                    Expression constant = null;
+
+                    // Handle different property types
+                    if (propertyType == typeof(string))
+                    {
+                        constant = Expression.Constant(propertyValue, typeof(string));
+                    }
+                    else if (propertyType.IsEnum) // Handle Enums
+                    {
+                        var enumValue = Enum.Parse(propertyType, propertyValue);
+                        constant = Expression.Constant(enumValue);
+                    }
+                    else if (propertyType == typeof(int) || propertyType == typeof(int?)) // Handle Int
+                    {
+                        constant = Expression.Constant(int.Parse(propertyValue));
+                    }
+                    else if (propertyType == typeof(bool) || propertyType == typeof(bool?)) // Handle Boolean
+                    {
+                        constant = Expression.Constant(bool.Parse(propertyValue));
+                    }
+                    else if (propertyType == typeof(long) || propertyType == typeof(long?)) // Handle long
+                    {
+                        constant = Expression.Constant(long.Parse(propertyValue));
+                    }
+                    else
+                    {
+                        throw new Exception($"Filtering for type {propertyType} is not supported.");
+                    }
+
+                    // Create an Equals expression
+                    var equalsExpression = Expression.Equal(property, constant);
+
+                    // Create the lambda: x => x.PropertyName == value
+                    var lambda = Expression.Lambda<Func<T, bool>>(equalsExpression, parameter);
+
+                    query = query.Where(lambda);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Provide a valid filter parameter", ex);
+            }
+        }
+
+        // Fetch data from the database
+        var results = await query.ToListAsync();
+
+        // Apply search across all properties in-memory
+        if (!string.IsNullOrEmpty(search))
+        {
+            try
+            {
+                var resultProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                results = results
+                    .Where(result =>
+                        resultProperties.Any(prop =>
+                        {
+                            var value = prop.GetValue(result)?.ToString();
+                            return value != null && value.Contains(search, StringComparison.OrdinalIgnoreCase);
+                        }))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Provide a valid search parameter", ex);
+            }
+        }
+
+        // Total data count (after filtering and searching)
+        var totalCount = results.Count;
+
+        // Pagination
+        if (page != 0 && pageSize != 0)
+        {
+            results = results
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+
+        return results;
+    }
+
+
+
+
+    public virtual async Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _context.Set<T>().Where(expression).ToListAsync();
+    }
+
+    public virtual async Task<T> GetSingleAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _context.Set<T>().FirstOrDefaultAsync(expression);
+    }
+
+
+    public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _context.Set<T>().FirstOrDefaultAsync(expression);
+    }
+
+    public virtual async Task<T?> GetByIdAsync(I id)
+    {
+        ArgumentValidatorHelpers.ValidateArgument(id, nameof(id));
+        return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id.Equals(id));
+    }
+
+    public virtual async Task<T?> GetByCodeAsync(string code)
+    {
+        ArgumentValidatorHelpers.ValidateStringArgument(code, nameof(code));
+        return await _context.Set<T>().FindAsync(code);
+    }
+
+
+    public virtual async Task<T> CreateAsync(T entity)
+    {
+        ArgumentValidatorHelpers.ValidateArgument(entity, nameof(entity));
+        await _context.Set<T>().AddAsync(entity);
+        return entity;
+    }
+
+    public virtual async Task<bool> UpdateAsync(I id, T entity)
+    {
+        ArgumentValidatorHelpers.ValidateArgument(entity, nameof(entity));
+
+        try
+        {
+            _context.Set<T>().Update(entity);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("An error occurred while updating the entity.", ex);
+        }
+    }
+
+    public virtual async Task<T[]> AddEntitiesAsync(IEnumerable<T> entities)
+{
+    ArgumentValidatorHelpers.ValidateArgument(entities, nameof(entities));
+
+    try
+    {
+        var entityArray = entities.ToArray(); // Convert to array internally
+        await _context.Set<T>().AddRangeAsync(entityArray);
+        return entityArray;
+    }
+    catch (Exception ex)
+    {
+        throw new InvalidOperationException("An error occurred while adding entities.", ex);
+    }
+}
+
+
+    public virtual async Task<bool> DeleteAsync(I id)
+    {
+        ArgumentValidatorHelpers.ValidateArgument(id, nameof(id));
+
+        var entity = await GetByIdAsync(id);
+        if (entity == null) throw new KeyNotFoundException("Entity not found.");
+
+        _context.Set<T>().Remove(entity);
+        return true;
+    }
+
+    public virtual async Task<IList<string>> DeleteAsync(Expression<Func<T, bool>> expression)
+    {
+        ArgumentValidatorHelpers.ValidateArgument(expression, nameof(expression));
+
+        var entities = await GetAllAsync(expression);
+
+        var ids = entities.Select(e => e.Id?.ToString()).ToList();
+
+        await DeleteEntitiesAsync(expression);
+
+        return ids;
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    private async Task<IList<T>> GetFilteredEntitiesAsync(Dictionary<string, string> fieldValues)
+    {
+        ArgumentValidatorHelpers.ValidateArgument(fieldValues, nameof(fieldValues));
+
+        var lambda = ExpressionGenerator.GenerateLambda<T>(fieldValues);
+        return await _context.Set<T>().Where(lambda).ToListAsync();
+    }
+
+    private async Task<IList<T>> DeleteEntitiesAsync(Expression<Func<T, bool>> expression)
+    {
+        var entitiesToDelete = await _context.Set<T>().Where(expression).ToListAsync();
+        if (entitiesToDelete.Count == 0) throw new ArgumentException("No matching records found.");
+
+        _context.Set<T>().RemoveRange(entitiesToDelete);
+        await _context.SaveChangesAsync();
+
+        return entitiesToDelete;
+    }
+
+    #endregion
+}
