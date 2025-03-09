@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChickTrack.Base\ChickTrack.Base.csproj" />
+    <ProjectReference Include="..\ChickTrack.Domain\ChickTrack.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

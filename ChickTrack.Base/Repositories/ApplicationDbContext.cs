@@ -1,34 +1,39 @@
-﻿namespace Lagetronix.Rapha.Base.Common.Repositories
+﻿using ChickTrack.Base.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+public class ApplicationDbContext : IdentityDbContext<BaseUser>, IApplicationDbContext
 {
-    public abstract class ApplicationDbContext : DbContext, IApplicationDbContext
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
+    public override DbSet<TEntity> Set<TEntity>() where TEntity : class
     {
-        protected ApplicationDbContext(DbContextOptions options) : base(options) { }
+        return base.Set<TEntity>();
+    }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var currentTime = DateTime.Now;
+
+        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
         {
-            var currentTime = DateTime.Now;
+            if (entry.Entity == null) continue;
 
-            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+            switch (entry.State)
             {
-                if (entry.Entity == null) continue;
+                case EntityState.Added:
+                    entry.Entity.CreatedBy = entry.Entity.CreatedBy ?? "SYSTEM";
+                    entry.Entity.CreatedOn = currentTime;
+                    entry.Entity.LastModifiedBy = "SYSTEM";
+                    entry.Entity.LastModifiedOn = currentTime;
+                    break;
 
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.Entity.CreatedBy = entry.Entity.CreatedBy ?? "SYSTEM";
-                        entry.Entity.CreatedOn = currentTime;
-                        entry.Entity.LastModifiedBy = "SYSTEM";
-                        entry.Entity.LastModifiedOn = currentTime;
-                        break;
-
-                    case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = "SYSTEM";
-                        entry.Entity.LastModifiedOn = currentTime;
-                        break;
-                }
+                case EntityState.Modified:
+                    entry.Entity.LastModifiedBy = "SYSTEM";
+                    entry.Entity.LastModifiedOn = currentTime;
+                    break;
             }
-
-            return await base.SaveChangesAsync(cancellationToken);
         }
+
+        return await base.SaveChangesAsync(cancellationToken);
     }
 }
