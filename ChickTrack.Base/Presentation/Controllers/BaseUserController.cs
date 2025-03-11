@@ -37,10 +37,30 @@ namespace ChickTrack.Base.Presentation.Controllers
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
+            email = email.ToUpper();
             var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null) return NotFound(new { message = "User not found" });
 
             return Ok(user);
+        }
+
+        [HttpGet("all-users")]
+        public async Task<ActionResult<IEnumerable<BaseUser>>> GetAllUsers()
+        {
+            var users = await _userRepository.GetAllUserAsync();
+            return Ok(users);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Result<dynamic>>> GetAllUsers(
+        [FromQuery] string search = null,
+        [FromQuery] string filter = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string select = null)
+        {
+            var users = await _userRepository.GetAllUsersAsync(search, filter, page, pageSize, select);
+            return Ok(users);
         }
 
         [HttpPost("create")]
@@ -50,7 +70,11 @@ namespace ChickTrack.Base.Presentation.Controllers
             {
                 UserName = request.UserName,
                 Email = request.Email,
-                FullName = request.FullName
+                FullName = request.FullName,
+                CreatedOn = request.CreatedOn,
+                CreatedBy = request.CreatedBy,
+                LastModifiedOn = request.LastModifiedOn,
+                LastModifiedBy = request.LastModifiedBy,
             };
 
             var result = await _userRepository.CreateUserAsync(user, request.Password);
@@ -70,6 +94,8 @@ namespace ChickTrack.Base.Presentation.Controllers
             user.FullName = request.FullName ?? user.FullName;
             user.Email = request.Email ?? user.Email;
             user.UserName = request.UserName ?? user.UserName;
+            user.LastModifiedOn = request.LastModifiedOn;
+            user.LastModifiedBy = request.LastModifiedBy;
 
             var result = await _userRepository.UpdateUserAsync(user);
             if (!result.Succeeded)
@@ -95,6 +121,11 @@ namespace ChickTrack.Base.Presentation.Controllers
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public string? CreatedBy { get; set; }
+        public DateTime LastModifiedOn { get; set; } = DateTime.Now;
+        public string? LastModifiedBy { get; set; }
+
     }
 
     public class UpdateUserRequest
@@ -103,5 +134,7 @@ namespace ChickTrack.Base.Presentation.Controllers
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? UserName { get; set; }
+        public DateTime LastModifiedOn { get; set; } = DateTime.Now;
+        public string? LastModifiedBy { get; set; }
     }
 }

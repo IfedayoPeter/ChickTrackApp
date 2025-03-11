@@ -24,6 +24,7 @@ public static class DependencyInjection
         // Register repositories
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IJwtRepository, JwtRepository>();
 
         return services;
     }

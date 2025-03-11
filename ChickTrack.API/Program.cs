@@ -1,9 +1,8 @@
-using ChickTrack.Base.Repositories;
-using Lagetronix.Rapha.Base.Common.Repositories;
+using ChickTrack.Base.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph.Models.ExternalConnectors;
-using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
@@ -11,9 +10,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//builder.Services.AddIdentity<BaseUser, IdentityRole>()
+//            .AddEntityFrameworkStores<ApplicationDbContext>()
+//            .AddDefaultTokenProviders();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -69,9 +71,11 @@ builder.Services.AddAuthentication(option =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("RequireUser", policy => policy.RequireRole("User"));
+    options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin", "SuperAdmin")); 
+    options.AddPolicy("User", policy => policy.RequireRole("User", "Admin", "SuperAdmin")); 
 });
+
 
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
@@ -83,7 +87,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services
-    .AddBaseRepositoryDependencies(builder.Configuration); 
+    .AddBaseRepositoryDependencies(builder.Configuration);
 
 var app = builder.Build();
 
