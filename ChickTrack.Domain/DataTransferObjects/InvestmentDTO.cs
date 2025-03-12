@@ -4,9 +4,12 @@ namespace ChickTrack.Domain.DataTransferObjects
 {
     public class InvestmentDTO
     {
-        public string Code { get; set; }
+        public long Id { get; set; } 
+        public string UserId { get; set; }
         public decimal Amount { get; set; }
+        public DateTime Date { get; set; }
         public string Description { get; set; }
         public string ReceiptImageUrl { get; set; }
     }
+
 }

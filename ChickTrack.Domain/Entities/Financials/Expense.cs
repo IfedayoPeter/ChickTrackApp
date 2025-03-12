@@ -1,6 +1,6 @@
 ﻿using Lagetronix.Rapha.Base.Common.Domain.Entities;
 
-namespace ChickTrack.Domain.Entities
+namespace ChickTrack.Domain.Entities.Financials
 {
     public class Expense : BaseEntity<long>
     {

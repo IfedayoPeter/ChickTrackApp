@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -20,10 +20,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChickTrack.Base\ChickTrack.Base.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\ChickTrack.Data\ChickTrack.Data.csproj" />
+    <ProjectReference Include="..\ChickTrack.Domain\ChickTrack.Domain.csproj" />
+    <ProjectReference Include="..\ChickTrack.Service\ChickTrack.Service.csproj" />
   </ItemGroup>
 
 </Project>

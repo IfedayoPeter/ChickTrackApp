@@ -1,6 +1,7 @@
 ﻿using ChickTrack.Base.Domain.Entities;
 using ChickTrack.Base.Repositories.Implementations;
 using ChickTrack.Base.Repositories.Interfaces;
+using Lagetronix.Rapha.Base.Repositories.Implementations;
 using Microsoft.AspNetCore.Identity;
 
 public static class DependencyInjection
@@ -15,6 +16,8 @@ public static class DependencyInjection
 
         // Register IApplicationDbContext
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
+        services.AddScoped(typeof(IMSSQLRepository<,>), typeof(MSSQLRepository<,>));
 
         // Identity services
         services.AddIdentity<BaseUser, IdentityRole>()

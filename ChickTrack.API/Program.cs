@@ -1,4 +1,6 @@
 using ChickTrack.Base.Domain.Entities;
+using ChickTrack.Data;
+using ChickTrack.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -87,7 +89,9 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services
-    .AddBaseRepositoryDependencies(builder.Configuration);
+    .AddBaseRepositoryDependencies(builder.Configuration)
+    .AddServiceDependencies(builder.Configuration)
+    .AddDataDependencies(builder.Configuration);
 
 var app = builder.Build();
 
