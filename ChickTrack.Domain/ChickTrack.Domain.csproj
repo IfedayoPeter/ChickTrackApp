@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\Dashboard\" />
+    <Folder Include="Entities\Personnels\" />
   </ItemGroup>
 
   <ItemGroup>

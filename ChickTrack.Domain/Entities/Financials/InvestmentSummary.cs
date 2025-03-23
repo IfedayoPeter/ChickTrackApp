@@ -3,12 +3,11 @@ using Lagetronix.Rapha.Base.Common.Domain.Entities;
 
 namespace ChickTrack.Domain.Entities.Financials
 {
-    public class Expense : BaseEntity<long>
+    public class InvestmentSummary : BaseEntity<long>
     {
-        public DateTime Date { get; set; }
         public string InvestorId { get; set; }
         public BaseUser Investor { get; set; }
-        public string Description { get; set; }
-        public decimal Amount { get; set; }
+        public decimal TotalInvestment { get; set; }
+        public decimal TotalExpenses { get; set; }
     }
 }

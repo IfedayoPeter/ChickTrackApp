@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
-using ChickTrack.Service.Implementations;
-using ChickTrack.Service.Interfaces;
+using ChickTrack.Service.Implementations.Feed;
+using ChickTrack.Service.Implementations.Financial;
+using ChickTrack.Service.Implementations.Poultry;
+using ChickTrack.Service.Interfaces.Feed;
+using ChickTrack.Service.Interfaces.Financial;
+using ChickTrack.Service.Interfaces.Poultry;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,9 +14,28 @@ namespace ChickTrack.Service
     {
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IInvestmentService, InvestmentService>();
+            //Feed
+            services.AddScoped<IFeedInventoryService, FeedInventoryService>();
+            services.AddScoped<IFeedLogService, FeedLogService>();
+            services.AddScoped<IFeedSalesUnitService, FeedSalesUnitService>();
+
+            //Financials
             services.AddScoped<IExpensesService, ExpensesService>();
-            services.AddScoped<IPoultryService, PoultryService>();
+            services.AddScoped<IInvestmentService, InvestmentService>();
+            services.AddScoped<IInvestmentSummaryService, InvestmentSummaryService>();
+            services.AddScoped<ISaleRecordService, SalesRecordService>();
+            services.AddScoped<ITotalSalesService, TotalSalesService>();
+
+            //Poultry
+            services.AddScoped<IBirdService, BirdService>();
+            services.AddScoped<IBirdManagementService, BirdManagementService>();
+            services.AddScoped<IBirdTransactionService, BirdTransactionService>();
+            services.AddScoped<IBirdTransactionService, BirdTransactionService>();
+            services.AddScoped<IEggInventoryService, EggInventoryService>();
+            services.AddScoped<IEggTransactionService, EggTransactionService>();
+            services.AddScoped<IEggTransactionService, EggTransactionService>();
+            services.AddScoped<IEggInventoryService, EggInventoryService>();
+
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {

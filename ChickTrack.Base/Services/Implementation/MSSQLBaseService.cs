@@ -149,6 +149,8 @@ public abstract class MSSQLBaseService<TEntity, TId> : IMSSQLBaseService<TEntity
         return result;
     }
 
+  
+
     public virtual async Task<Result<bool>> UpdateAsync<TRequest>(TId id, TRequest request)
     {
         var result = new Result<bool>(false);
@@ -163,7 +165,16 @@ public abstract class MSSQLBaseService<TEntity, TId> : IMSSQLBaseService<TEntity
                 return result;
             }
 
-            _mapper.Map(request, existingEntity);
+            // Ignore 'Id' if it exists in the request
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<TRequest, TEntity>()
+                   .ForMember(dest => dest.Id, opt => opt.Ignore());
+            });
+
+            var mapper = config.CreateMapper();
+            mapper.Map(request, existingEntity);
+
             await _context.SaveChangesAsync();
 
             result.SetSuccess(true, $"{typeof(TEntity).Name} with Id {id} updated successfully.");
@@ -175,6 +186,7 @@ public abstract class MSSQLBaseService<TEntity, TId> : IMSSQLBaseService<TEntity
 
         return result;
     }
+
 
     public virtual async Task<Result<string>> ImportAsync<TRequest>(TRequest[] requests)
     {

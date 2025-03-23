@@ -178,6 +178,7 @@ public abstract class MSSQLBaseRepository<T, I> : IMSSQLRepository<T, I>
         try
         {
             _context.Set<T>().Update(entity);
+
             return true;
         }
         catch (Exception ex)
