@@ -8,5 +8,6 @@ namespace ChickTrack.Domain.DataTransferObjects.Financial
         public string InvestorFullName { get; set; }
         public decimal TotalInvestment { get; set; }
         public decimal TotalExpenses { get; set; }
+        public decimal Balance { get; set; }
     }
 }

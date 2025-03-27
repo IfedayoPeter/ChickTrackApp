@@ -10,13 +10,15 @@ namespace ChickTrack.API.Controllers.Financial
     [ApiController]
     public class SaleRecordController : MSSQLBaseController<SaleRecord, SaleRecordDto, long>
     {
+        private readonly ISaleRecordService _service;
         public SaleRecordController(ISaleRecordService service) : base(service)
         {
+            _service = service;
         }
         [HttpPost]
         public async Task<ActionResult> CreateSaleRecord([FromBody] SaleRecordDto request)
         {
-            var response = await CreateAsync(request);
+            var response = await _service.CreateSalesRecord(request);
             return Ok(response);
         }
         [HttpPut]

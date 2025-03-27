@@ -32,7 +32,9 @@ namespace ChickTrack.Service
                 .ReverseMap();
             CreateMap<InvestmentSummary, InvestmentSummaryDto>()
                 .ReverseMap();
-            CreateMap<TotalSales, TotalSalesDto>()
+            CreateMap<SaleRecord, SaleRecordDto>()
+                .ForMember(dest => dest.FeedSalesUnit, opt => opt.MapFrom(src => src.FeedSalesUnit.unitQuantity))
+                .ForMember(dest => dest.FeedSalesUnitName, opt => opt.MapFrom(src => src.FeedSalesUnit.unitName))
                 .ReverseMap();
             CreateMap<TotalSales, TotalSalesDto>()
                 .ReverseMap();
