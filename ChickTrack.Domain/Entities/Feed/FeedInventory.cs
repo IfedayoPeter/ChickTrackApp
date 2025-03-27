@@ -6,7 +6,7 @@ namespace ChickTrack.Domain.Entities.Feed
     public class FeedInventory : BaseEntity<long>
     {
         public FeedBrandEnum FeedBrand { get; set; }
-        public int BagsSold { get; set; }
+        public decimal BagsBought { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
     }
