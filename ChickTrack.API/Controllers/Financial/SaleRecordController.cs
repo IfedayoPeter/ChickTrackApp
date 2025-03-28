@@ -16,7 +16,7 @@ namespace ChickTrack.API.Controllers.Financial
             _service = service;
         }
         [HttpPost]
-        public async Task<ActionResult> CreateSaleRecord([FromBody] SaleRecordDto request)
+        public async Task<ActionResult> CreateSaleRecord([FromBody] CreateSaleRecordDto request)
         {
             var response = await _service.CreateSalesRecord(request);
             return Ok(response);

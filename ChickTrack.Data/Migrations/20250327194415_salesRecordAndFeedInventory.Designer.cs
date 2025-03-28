@@ -4,6 +4,7 @@ using ChickTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChickTrack.Data.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250327194415_salesRecordAndFeedInventory")]
+    partial class salesRecordAndFeedInventory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,21 +108,14 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Feed.FeedInventory", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BagsBought")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -133,24 +129,27 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("FeedBrand")
                         .HasColumnType("int");
 
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("FeedInventories", (string)null);
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Feed.FeedLog", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("AvailableBags")
                         .HasColumnType("decimal(18,9)");
@@ -161,10 +160,6 @@ namespace ChickTrack.Data.Migrations
                     b.Property<decimal>("BagsSold")
                         .HasColumnType("decimal(18,9)");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -174,34 +169,39 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("FeedBrand")
                         .HasColumnType("int");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FeedLogs", (string)null);
-                });
-
-            modelBuilder.Entity("ChickTrack.Domain.Entities.Feed.FeedSalesUnit", b =>
-                {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Code")
-                        .IsRequired()
+                    b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("FeedLogs", (string)null);
+                });
+
+            modelBuilder.Entity("ChickTrack.Domain.Entities.Feed.FeedSalesUnit", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -216,25 +216,18 @@ namespace ChickTrack.Data.Migrations
                     b.Property<decimal>("unitQuantity")
                         .HasColumnType("decimal(18,9)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("FeedSalesUnits", (string)null);
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.Expense", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -248,6 +241,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("InvestorId")
                         .IsRequired()
@@ -259,7 +258,7 @@ namespace ChickTrack.Data.Migrations
                     b.Property<DateTime>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("InvestorId");
 
@@ -268,18 +267,11 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.Investment", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -293,6 +285,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -308,7 +306,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -317,21 +315,20 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.InvestmentSummary", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("InvestorId")
                         .IsRequired()
@@ -349,7 +346,7 @@ namespace ChickTrack.Data.Migrations
                     b.Property<decimal>("TotalInvestment")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("InvestorId");
 
@@ -358,17 +355,10 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.SaleRecord", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BuyerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -388,8 +378,18 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int?>("FeedBrand")
                         .HasColumnType("int");
 
+                    b.Property<string>("FeedSalesUnitCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<long?>("FeedSalesUnitId")
                         .HasColumnType("bigint");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -406,30 +406,23 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("SalesType")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
-                    b.HasIndex("FeedSalesUnitId");
+                    b.HasIndex("FeedSalesUnitCode");
 
                     b.ToTable("SaleRecords", (string)null);
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.TotalSales", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,9)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BagsSold")
                         .HasColumnType("decimal(18,9)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -440,6 +433,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("FeedBrand")
                         .HasColumnType("int");
 
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -447,30 +446,23 @@ namespace ChickTrack.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Profit")
-                        .HasColumnType("decimal(18,9)");
+                        .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("TotalSales", (string)null);
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdManagement", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ActionType")
                         .HasColumnType("int");
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -488,6 +480,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -501,7 +499,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -510,11 +508,8 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdTransaction", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -524,10 +519,6 @@ namespace ChickTrack.Data.Migrations
 
                     b.Property<int>("BirdsSold")
                         .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -541,6 +532,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -551,7 +548,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -560,11 +557,8 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.Birds", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("BirdsLost")
                         .HasColumnType("int");
@@ -575,10 +569,6 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Chicks")
                         .HasColumnType("int");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -587,6 +577,12 @@ namespace ChickTrack.Data.Migrations
 
                     b.Property<int>("FemaleBirds")
                         .HasColumnType("int");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -601,7 +597,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -610,15 +606,8 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggInventory", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -628,6 +617,12 @@ namespace ChickTrack.Data.Migrations
 
                     b.Property<int>("Hatched")
                         .HasColumnType("int");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -645,7 +640,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -654,21 +649,14 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggManagement", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ActionType")
                         .HasColumnType("int");
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -682,6 +670,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -696,7 +690,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -705,18 +699,11 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggTransaction", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -734,6 +721,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Hatched")
                         .HasColumnType("int");
 
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -750,7 +743,7 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.HasIndex("UserId");
 
@@ -927,7 +920,9 @@ namespace ChickTrack.Data.Migrations
                 {
                     b.HasOne("ChickTrack.Domain.Entities.Feed.FeedSalesUnit", "FeedSalesUnit")
                         .WithMany()
-                        .HasForeignKey("FeedSalesUnitId");
+                        .HasForeignKey("FeedSalesUnitCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FeedSalesUnit");
                 });

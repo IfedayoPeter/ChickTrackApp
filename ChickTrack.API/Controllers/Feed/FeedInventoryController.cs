@@ -10,13 +10,15 @@ namespace ChickTrack.API.Controllers.Feed
     [ApiController]
     public class FeedInventoryController : MSSQLBaseController<FeedInventory, FeedInventoryDto, long>
     {
+        private readonly IFeedInventoryService _service;
         public FeedInventoryController(IFeedInventoryService service) : base(service)
         {
+            _service = service;
         }
         [HttpPost]
         public async Task<ActionResult> CreateFeedInventory([FromBody] FeedInventoryDto request)
         {
-            var response = await CreateAsync(request);
+            var response = await _service.CreateFeedInventory(request);
             return Ok(response);
         }
         [HttpPut]

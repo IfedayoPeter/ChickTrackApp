@@ -9,6 +9,7 @@ public interface IMSSQLRepository<T, I> where T : BaseEntity<I>
     Task<IList<T>> GetAllAsync();
     Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> expression);
     Task<T> GetSingleAsync(Expression<Func<T, bool>> expression);
+    Task<T> GetSingleWithIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
     Task<T> GetByCodeAsync(string code);
     Task<T?> GetByIdAsync(I id);
     Task<T?> GetAsync(Expression<Func<T, bool>> expression);

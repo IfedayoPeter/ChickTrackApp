@@ -35,50 +35,50 @@ namespace ChickTrack.Data
             // Feed
             builder.Entity<FeedInventory>()
                 .ToTable("FeedInventories")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<FeedLog>()
                 .ToTable("FeedLogs")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<FeedSalesUnit>()
                 .ToTable("FeedSalesUnits")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
 
             // Financials
             builder.Entity<Investment>()
                 .ToTable("Investments")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<Expense>()
                 .ToTable("Expenses")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<InvestmentSummary>()
                 .ToTable("InvestmentSummaries")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<SaleRecord>()
                 .ToTable("SaleRecords")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<TotalSales>()
                 .ToTable("TotalSales")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
 
             // Poultry
             builder.Entity<BirdManagement>()
                 .ToTable("BirdManagements")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<Birds>()
                 .ToTable("Birds")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<BirdTransaction>()
                 .ToTable("BirdTransactions")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<EggInventory>()
                 .ToTable("EggInventories")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<EggManagement>()
                 .ToTable("EggManagements")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
             builder.Entity<EggTransaction>()
                 .ToTable("EggTransactions")
-                .HasKey(x => x.Code);
+                .HasKey(x => x.Id);
 
             base.OnModelCreating(builder);
         }

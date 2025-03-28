@@ -4,6 +4,7 @@ using ChickTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChickTrack.Data.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250327202937_changedPKtoId")]
+    partial class changedPKtoId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -422,7 +425,7 @@ namespace ChickTrack.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,9)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BagsSold")
                         .HasColumnType("decimal(18,9)");
@@ -447,7 +450,7 @@ namespace ChickTrack.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Profit")
-                        .HasColumnType("decimal(18,9)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

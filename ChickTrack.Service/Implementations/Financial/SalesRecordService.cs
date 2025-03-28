@@ -34,7 +34,7 @@ namespace ChickTrack.Service.Implementations.Financial
             _mapper = mapper;
         }
 
-        public async Task<Result<SaleRecordDto>> CreateSalesRecord(SaleRecordDto saleRecordDto)
+        public async Task<Result<SaleRecordDto>> CreateSalesRecord(CreateSaleRecordDto saleRecordDto)
         {
             var result = new Result<SaleRecordDto>(false);
             try
@@ -43,6 +43,9 @@ namespace ChickTrack.Service.Implementations.Financial
 
                 var saleRecord = _mapper.Map<SaleRecord>(saleRecordDto);
                 var response = await _saleRecord.CreateAsync(saleRecord);
+
+                await _context.SaveChangesAsync();
+                var existingSalesRecord = await _saleRecord.GetSingleWithIncludeAsync(x => x.Code == saleRecordDto.Code, x => x.FeedSalesUnit);
 
                 if (saleRecordDto.SalesType == Domain.Enums.SalesTypeEnum.Feed)
                 {
@@ -53,25 +56,25 @@ namespace ChickTrack.Service.Implementations.Financial
                         {
                             Code = RandomGenerator.RandomString(10),
                             FeedBrand = saleRecordDto.FeedBrand.HasValue ? saleRecordDto.FeedBrand.Value : throw new ArgumentNullException(nameof(saleRecordDto.FeedBrand)),
-                            BagsSold = saleRecordDto.FeedSalesUnit,
+                            BagsSold = existingSalesRecord.FeedSalesUnit.unitQuantity,
                             Amount = saleRecordDto.Price,
-                            Profit = FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), saleRecordDto.FeedSalesUnitName, saleRecordDto.Quantity, saleRecord.Price)
+                            Profit = FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecord.Quantity, saleRecord.Price)
                         };
                         await _totalSales.CreateAsync(totalSales);
                     }
                     else
                     {
-                        totalSales.BagsSold += saleRecordDto.FeedSalesUnit;
+                        totalSales.BagsSold += existingSalesRecord.FeedSalesUnit.unitQuantity;
                         totalSales.Amount += saleRecordDto.Price;
-                        totalSales.Profit += FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), saleRecordDto.FeedSalesUnitName, saleRecordDto.Quantity, saleRecordDto.Price);
+                        totalSales.Profit += FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
                     var feedLog = await _feedLog.GetSingleAsync(x => x.FeedBrand == saleRecordDto.FeedBrand);
                     if (feedLog != null)
                     {
-                        feedLog.BagsSold += saleRecordDto.FeedSalesUnit;
-                        feedLog.AvailableBags -= saleRecordDto.FeedSalesUnit;
+                        feedLog.BagsSold += existingSalesRecord.FeedSalesUnit.unitQuantity;
+                        feedLog.AvailableBags -= existingSalesRecord.FeedSalesUnit.unitQuantity;
                         await _feedLog.UpdateAsync(feedLog.Id, feedLog);
                     }
                     else
@@ -80,7 +83,7 @@ namespace ChickTrack.Service.Implementations.Financial
                         {
                             Code = RandomGenerator.RandomString(10),
                             FeedBrand = saleRecordDto.FeedBrand.HasValue ? saleRecordDto.FeedBrand.Value : throw new ArgumentNullException(nameof(saleRecordDto.FeedBrand)),
-                            BagsSold = saleRecordDto.FeedSalesUnit
+                            BagsSold = existingSalesRecord.FeedSalesUnit.unitQuantity
                         };
                         await _feedLog.CreateAsync(feedLog);
                     }

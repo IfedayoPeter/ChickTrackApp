@@ -6,6 +6,6 @@ namespace ChickTrack.Service.Interfaces.Financial
 {
     public interface ISaleRecordService : IMSSQLBaseService<SaleRecord, long>
     {
-        Task<Result<SaleRecordDto>> CreateSalesRecord(SaleRecordDto saleRecordDto);
+        Task<Result<SaleRecordDto>> CreateSalesRecord(CreateSaleRecordDto saleRecordDto);
     }
 }

@@ -145,16 +145,31 @@ public abstract class MSSQLBaseRepository<T, I> : IMSSQLRepository<T, I>
         return await _context.Set<T>().FirstOrDefaultAsync(expression);
     }
 
+    public virtual async Task<T> GetSingleWithIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _context.Set<T>();
+
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+
+        return await query.FirstOrDefaultAsync(expression);
+    }
+
+
 
     public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> expression)
     {
-        return await _context.Set<T>().FirstOrDefaultAsync(expression);
+        var response = await _context.Set<T>().Where(expression).FirstOrDefaultAsync(expression);
+        return response;
     }
 
     public virtual async Task<T?> GetByIdAsync(I id)
     {
         ArgumentValidatorHelpers.ValidateArgument(id, nameof(id));
-        return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id.Equals(id));
+        var response = await _context.Set<T>().FirstOrDefaultAsync(x => x.Id.Equals(id));
+        return response;
     }
 
     public virtual async Task<T?> GetByCodeAsync(string code)
@@ -171,14 +186,45 @@ public abstract class MSSQLBaseRepository<T, I> : IMSSQLRepository<T, I>
         return entity;
     }
 
+    //public virtual async Task<bool> UpdateAsync(I id, T entity)
+    //{
+    //    ArgumentValidatorHelpers.ValidateArgument(entity, nameof(entity));
+
+    //    try
+    //    {
+    //        _context.Set<T>().Update(entity);
+
+    //        return true;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        throw new InvalidOperationException("An error occurred while updating the entity.", ex);
+    //    }
+    //}
+
     public virtual async Task<bool> UpdateAsync(I id, T entity)
     {
         ArgumentValidatorHelpers.ValidateArgument(entity, nameof(entity));
 
         try
         {
-            _context.Set<T>().Update(entity);
+            var existingEntity = await _context.Set<T>().FindAsync(id);
+            if (existingEntity == null)
+            {
+                throw new KeyNotFoundException($"Entity with ID {id} not found.");
+            }
 
+            // Ensure the ID from entity is not modified
+            var entityType = typeof(T);
+            var idProperty = entityType.GetProperty("Id");
+
+            if (idProperty != null)
+            {
+                var existingIdValue = idProperty.GetValue(existingEntity);
+                idProperty.SetValue(entity, existingIdValue);
+            }
+
+            _context.Entry(existingEntity).CurrentValues.SetValues(entity);
             return true;
         }
         catch (Exception ex)
@@ -186,6 +232,7 @@ public abstract class MSSQLBaseRepository<T, I> : IMSSQLRepository<T, I>
             throw new InvalidOperationException("An error occurred while updating the entity.", ex);
         }
     }
+
 
     public virtual async Task<T[]> AddEntitiesAsync(IEnumerable<T> entities)
 {
