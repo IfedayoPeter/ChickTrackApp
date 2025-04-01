@@ -7,6 +7,6 @@ namespace ChickTrack.Service.Interfaces.Poultry
 {
     public interface IBirdManagementService : IMSSQLBaseService<BirdManagement, long>
     {
-        Task<Result<BirdManagementDto>> CreateBirdManagement(CreateBirdManagementDto birdManagementDto);
+      //  Task<Result<BirdManagementDto>> CreateBirdManagement(CreateBirdManagementDto birdManagementDto);
     }
 }

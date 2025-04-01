@@ -12,13 +12,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-//builder.Services.AddIdentity<BaseUser, IdentityRole>()
-//            .AddEntityFrameworkStores<ApplicationDbContext>()
-//            .AddDefaultTokenProviders();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -82,8 +75,12 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://chick-track.vercel.app")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials(); // Only needed if using authentication cookies
 }));
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -110,6 +107,9 @@ app.MapScalarApiReference(options =>
         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
         .WithOpenApiRoutePattern("/swagger/v1/swagger.json"); // Add Swagger JSON specification
 });
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("corsapp");
 
