@@ -4,6 +4,7 @@ using ChickTrack.Domain.DataTransferObjects.Financial.CreateDtos;
 using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
 using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
 using ChickTrack.Domain.DataTransferObjects.Poultry;
+using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
 using ChickTrack.Domain.Entities.Feed;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Domain.Entities.Poultry;
@@ -67,6 +68,18 @@ namespace ChickTrack.Service
             CreateMap<EggManagement, EggManagementDto>()
                 .ReverseMap();
             CreateMap<EggTransaction, EggTransactionDto>()
+                .ReverseMap();
+            CreateMap<BirdManagement, CreateBirdManagementDto>()
+                .ReverseMap();
+            CreateMap<Birds, CreateBirdsDto>()
+                .ReverseMap();
+            CreateMap<BirdTransaction, CreateBirdTransactionDto>()
+                .ReverseMap();
+            CreateMap<EggInventory, CreateEggInventoryDto>()
+                .ReverseMap();
+            CreateMap<EggManagement, CreateEggManagementDto>()
+                .ReverseMap();
+            CreateMap<EggTransaction, CreateEggTransactionDto>()
                 .ReverseMap();
         }
     }

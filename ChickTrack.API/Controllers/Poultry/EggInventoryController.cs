@@ -1,4 +1,5 @@
 ﻿using ChickTrack.Domain.DataTransferObjects.Poultry;
+using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
 using ChickTrack.Domain.Entities.Poultry;
 using ChickTrack.Service.Interfaces.Poultry;
 using Lagetronix.Rapha.Base.Common.Presentation;
@@ -15,7 +16,7 @@ namespace ChickTrack.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEggInventory([FromBody] EggInventoryDto request)
+        public async Task<ActionResult> CreateEggInventory([FromBody] CreateEggInventoryDto request)
         {
 
             var response = await CreateAsync(request);
@@ -24,7 +25,7 @@ namespace ChickTrack.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateEggInventory(long id, [FromBody] EggInventoryDto request)
+        public async Task<ActionResult> UpdateEggInventory(long id, [FromBody] UpdateEggInventoryDto request)
         {
 
             var response = await UpdateAsync(id, request);

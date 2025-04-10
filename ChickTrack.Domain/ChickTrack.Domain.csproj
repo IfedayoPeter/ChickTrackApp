@@ -10,9 +10,6 @@
     <Folder Include="DataTransferObjects\Feed\CreateDtos\" />
     <Folder Include="DataTransferObjects\Feed\GetDtos\" />
     <Folder Include="DataTransferObjects\Feed\UpdateDtos\" />
-    <Folder Include="DataTransferObjects\Poultry\CreateDtos\" />
-    <Folder Include="DataTransferObjects\Poultry\GetDtos\" />
-    <Folder Include="DataTransferObjects\Poultry\UpdateDtos\" />
     <Folder Include="Entities\Dashboard\" />
     <Folder Include="Entities\Personnels\" />
   </ItemGroup>

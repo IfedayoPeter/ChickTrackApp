@@ -1,8 +1,7 @@
 namespace ChickTrack.Domain.DataTransferObjects.Poultry
 {
-    public class BirdsDto
+    public class CreateBirdsDto
     {
-        public long Id { get; set; }
         public string Code { get; set; }
         public string UserId { get; set; }
         public int MaleBirds { get; set; }

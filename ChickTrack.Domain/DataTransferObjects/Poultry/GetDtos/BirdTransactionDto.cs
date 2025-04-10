@@ -1,6 +1,6 @@
 using ChickTrack.Domain.Enums;
 
-namespace ChickTrack.Domain.DataTransferObjects.Poultry
+namespace ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos
 {
     public class BirdTransactionDto
     {

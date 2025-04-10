@@ -1,4 +1,5 @@
 ﻿using ChickTrack.Domain.DataTransferObjects.Poultry;
+using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
 using ChickTrack.Domain.Entities.Poultry;
 using ChickTrack.Service.Interfaces.Poultry;
 using Lagetronix.Rapha.Base.Common.Presentation;
@@ -15,7 +16,7 @@ namespace ChickTrack.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateBirds([FromBody] BirdsDto request)
+        public async Task<ActionResult> CreateBirds([FromBody] CreateBirdsDto request)
         {
 
             var response = await CreateAsync(request);
@@ -24,7 +25,7 @@ namespace ChickTrack.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateBirds(long id, [FromBody] BirdsDto request)
+        public async Task<ActionResult> UpdateBirds(long id, [FromBody] UpdateBirdsDto request)
         {
 
             var response = await UpdateAsync(id, request);
