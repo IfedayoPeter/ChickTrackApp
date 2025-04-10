@@ -54,9 +54,8 @@ namespace ChickTrack.Base.Repositories.Implementations
                 // Manually map users to DTO
                 var responseDTO = users.Select(u => new BaseUser
                 {
+                    Id = u.Id,
                     FullName = u.FullName,
-                    CreatedBy = u.CreatedBy,
-                    LastModifiedBy = u.LastModifiedBy,
                     UserName = u.UserName,
                     NormalizedUserName = u.NormalizedUserName,
                     Email = u.Email,
@@ -68,7 +67,9 @@ namespace ChickTrack.Base.Repositories.Implementations
                     TwoFactorEnabled = u.TwoFactorEnabled,
                     LockoutEnd = u.LockoutEnd,
                     LockoutEnabled = u.LockoutEnabled,
-                    AccessFailedCount = u.AccessFailedCount
+                    AccessFailedCount = u.AccessFailedCount,
+                    CreatedBy = u.CreatedBy,
+                    LastModifiedBy = u.LastModifiedBy,
                 }).ToList();
 
                 // Selecting specific properties
@@ -96,7 +97,8 @@ namespace ChickTrack.Base.Repositories.Implementations
 
         public async Task<BaseUser> GetUserByIdAsync(string id)
         {
-            return await _userManager.FindByIdAsync(id);
+            var response = await _userManager.FindByIdAsync(id);
+            return response;
         }
 
         public async Task<BaseUser> GetUserByEmailAsync(string email)

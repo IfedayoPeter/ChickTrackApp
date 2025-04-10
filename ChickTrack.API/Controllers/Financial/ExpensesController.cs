@@ -1,4 +1,6 @@
 ﻿using ChickTrack.Domain.DataTransferObjects.Financial;
+using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Service.Interfaces.Financial;
 using Lagetronix.Rapha.Base.Common.Presentation;
@@ -15,7 +17,7 @@ namespace ChickTrack.API.Controllers.Financial
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateExpense([FromBody] ExpenseDto request)
+        public async Task<ActionResult> CreateExpense([FromBody] CreateExpenseDto request)
         {
 
             var response = await CreateAsync(request);
@@ -24,7 +26,7 @@ namespace ChickTrack.API.Controllers.Financial
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateExpense(long id, [FromBody] ExpenseDto request)
+        public async Task<ActionResult> UpdateExpense(long id, [FromBody] UpdateExpenseDto request)
         {
 
             var response = await UpdateAsync(id, request);

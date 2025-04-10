@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using ChickTrack.Domain.DataTransferObjects.Financial;
+using ChickTrack.Domain.DataTransferObjects.Financial.CreateDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
 using ChickTrack.Domain.Entities.Feed;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Service.Helpers;

@@ -1,4 +1,6 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Financial;
+﻿using ChickTrack.Domain.DataTransferObjects.Financial.CreateDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Service.Interfaces.Financial;
 using Lagetronix.Rapha.Base.Common.Presentation;
@@ -22,7 +24,7 @@ namespace ChickTrack.API.Controllers.Financial
             return Ok(response);
         }
         [HttpPut]
-        public async Task<ActionResult> UpdateSaleRecord(long id, [FromBody] SaleRecordDto request)
+        public async Task<ActionResult> UpdateSaleRecord(long id, [FromBody] UpdateSalesRecordDto request)
         {
             var response = await UpdateAsync(id, request);
             return Ok(response);

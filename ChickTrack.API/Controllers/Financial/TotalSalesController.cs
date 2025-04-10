@@ -1,4 +1,4 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Financial;
+﻿using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Service.Interfaces.Financial;
 using Lagetronix.Rapha.Base.Common.Presentation;

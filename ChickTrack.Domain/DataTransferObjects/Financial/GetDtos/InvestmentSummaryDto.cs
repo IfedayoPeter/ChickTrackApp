@@ -1,4 +1,4 @@
-namespace ChickTrack.Domain.DataTransferObjects.Financial
+namespace ChickTrack.Domain.DataTransferObjects.Financial.GetDtos
 {
     public class InvestmentSummaryDto
     {

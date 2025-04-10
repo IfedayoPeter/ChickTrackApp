@@ -1,5 +1,8 @@
 ﻿using ChickTrack.Domain.DataTransferObjects.Feed;
 using ChickTrack.Domain.DataTransferObjects.Financial;
+using ChickTrack.Domain.DataTransferObjects.Financial.CreateDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
 using ChickTrack.Domain.DataTransferObjects.Poultry;
 using ChickTrack.Domain.Entities.Feed;
 using ChickTrack.Domain.Entities.Financials;
@@ -27,8 +30,21 @@ namespace ChickTrack.Service
 
             //Financials
             CreateMap<Expense, ExpenseDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
+                .ReverseMap();
+            CreateMap<Expense, CreateExpenseDto>()
+                .ReverseMap();
+            CreateMap<Expense, UpdateExpenseDto>()
+                .ReverseMap();
+            CreateMap<Investment, CreateInvestmentDto>()
+                .ReverseMap();
+            CreateMap<Investment, UpdateInvestmentDto>()
                 .ReverseMap();
             CreateMap<Investment, InvestmentDto>()
+                .ReverseMap();
+            CreateMap<InvestmentSummary, CreateInvestmentSummaryDto>()
+                .ReverseMap();
+            CreateMap<InvestmentSummary, UpdateInvestmentSummaryDto>()
                 .ReverseMap();
             CreateMap<InvestmentSummary, InvestmentSummaryDto>()
                 .ReverseMap();

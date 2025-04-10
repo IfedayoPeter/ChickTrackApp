@@ -1,4 +1,5 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Financial;
+﻿using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
+using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Service.Interfaces.Financial;
 using Lagetronix.Rapha.Base.Common.Presentation;
@@ -14,13 +15,13 @@ namespace ChickTrack.API.Controllers.Financial
         {
         }
         [HttpPost]
-        public async Task<ActionResult> CreateInvestment([FromBody] InvestmentDto request)
+        public async Task<ActionResult> CreateInvestment([FromBody] CreateInvestmentDto request)
         {
             var response = await CreateAsync(request);
             return Ok(response);
         }
         [HttpPut]
-        public async Task<ActionResult> UpdateInvestment(long id, [FromBody] InvestmentDto request)
+        public async Task<ActionResult> UpdateInvestment(long id, [FromBody] UpdateInvestmentDto request)
         {
             var response = await UpdateAsync(id, request);
             return Ok(response);

@@ -1,6 +1,6 @@
 ﻿using ChickTrack.Domain.Enums;
 
-namespace ChickTrack.Domain.DataTransferObjects.Financial
+namespace ChickTrack.Domain.DataTransferObjects.Financial.CreateDtos
 {
     public class CreateSaleRecordDto
     {

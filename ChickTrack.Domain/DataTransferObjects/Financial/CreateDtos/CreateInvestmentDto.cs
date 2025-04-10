@@ -1,16 +1,12 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
-
-namespace ChickTrack.Domain.Entities.Financials
+namespace ChickTrack.Domain.DataTransferObjects.Financial.GetDtos
 {
-    public class Investment : BaseEntity<long>
+    public class CreateInvestmentDto
     {
+        public string Code { get; set; }
         public string InvestorId { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
         public string ReceiptImageUrl { get; set; }
-
-        public virtual BaseUser Investor { get; set; }
     }
 }

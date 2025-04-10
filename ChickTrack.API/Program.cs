@@ -1,10 +1,6 @@
-using ChickTrack.Base.Domain.Entities;
 using ChickTrack.Data;
 using ChickTrack.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph.Models.ExternalConnectors;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
@@ -67,15 +63,15 @@ builder.Services.AddAuthentication(option =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin", "SuperAdmin")); 
-    options.AddPolicy("User", policy => policy.RequireRole("User", "Admin", "SuperAdmin")); 
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin", "SuperAdmin"));
+    options.AddPolicy("User", policy => policy.RequireRole("User", "Admin", "SuperAdmin"));
 });
 
 
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
-    builder.WithOrigins("https://chick-track.vercel.app")
+    builder.WithOrigins("https://chick-track.vercel.app", "http://localhost:5173", "https://localhost:5173")
            .AllowAnyMethod()
            .AllowAnyHeader()
            .AllowCredentials(); // Only needed if using authentication cookies

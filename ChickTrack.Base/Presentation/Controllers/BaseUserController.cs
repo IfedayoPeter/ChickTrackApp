@@ -71,6 +71,7 @@ namespace ChickTrack.Base.Presentation.Controllers
                 UserName = request.UserName,
                 Email = request.Email,
                 FullName = request.FullName,
+                PhoneNumber = request.PhoneNumber,
                 CreatedOn = request.CreatedOn,
                 CreatedBy = request.CreatedBy,
                 LastModifiedOn = request.LastModifiedOn,
@@ -94,6 +95,7 @@ namespace ChickTrack.Base.Presentation.Controllers
             user.FullName = request.FullName ?? user.FullName;
             user.Email = request.Email ?? user.Email;
             user.UserName = request.UserName ?? user.UserName;
+            user.PhoneNumber = request.PhoneNumber ?? user.PhoneNumber;
             user.LastModifiedOn = request.LastModifiedOn;
             user.LastModifiedBy = request.LastModifiedBy;
 
@@ -120,6 +122,7 @@ namespace ChickTrack.Base.Presentation.Controllers
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
+        public string PhoneNumber {  get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public string? CreatedBy { get; set; }
@@ -134,6 +137,7 @@ namespace ChickTrack.Base.Presentation.Controllers
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? UserName { get; set; }
+        public string? PhoneNumber { get; set; }
         public DateTime LastModifiedOn { get; set; } = DateTime.Now;
         public string? LastModifiedBy { get; set; }
     }

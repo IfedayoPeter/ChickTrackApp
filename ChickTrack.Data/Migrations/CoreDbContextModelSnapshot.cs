@@ -294,6 +294,10 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -304,13 +308,9 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("Investments", (string)null);
                 });
@@ -468,6 +468,9 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
+                    b.Property<long>("BirdTransactionId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -488,6 +491,10 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -497,13 +504,9 @@ namespace ChickTrack.Data.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("BirdManagements", (string)null);
                 });
@@ -516,7 +519,7 @@ namespace ChickTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BirdsLost")
@@ -541,19 +544,25 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<int>("HatchedBirds")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PersonalConsumption")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("BirdTransactions", (string)null);
                 });
@@ -588,6 +597,10 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("FemaleBirds")
                         .HasColumnType("int");
 
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -597,13 +610,12 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("MaleBirds")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PersonalConsumption")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("Birds", (string)null);
                 });
@@ -629,25 +641,25 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Hatched")
                         .HasColumnType("int");
 
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PersonalCollection")
+                    b.Property<int>("PersonalConsumption")
                         .HasColumnType("int");
 
                     b.Property<int>("Sold")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("EggInventories", (string)null);
                 });
@@ -683,6 +695,16 @@ namespace ChickTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("EggInventoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EggTransactionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -692,13 +714,9 @@ namespace ChickTrack.Data.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("EggManagements", (string)null);
                 });
@@ -734,25 +752,25 @@ namespace ChickTrack.Data.Migrations
                     b.Property<int>("Hatched")
                         .HasColumnType("int");
 
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PersonalCollection")
+                    b.Property<int>("PersonalConsumption")
                         .HasColumnType("int");
 
                     b.Property<int>("Sold")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("EggTransactions", (string)null);
                 });
@@ -903,13 +921,13 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.Investment", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Financials.InvestmentSummary", b =>
@@ -934,68 +952,68 @@ namespace ChickTrack.Data.Migrations
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdManagement", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdTransaction", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.Birds", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggInventory", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggManagement", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggTransaction", b =>
                 {
-                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "User")
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
