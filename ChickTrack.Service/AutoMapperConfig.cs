@@ -43,12 +43,6 @@ namespace ChickTrack.Service
                 .ReverseMap();
             CreateMap<Investment, InvestmentDto>()
                 .ReverseMap();
-            CreateMap<InvestmentSummary, CreateInvestmentSummaryDto>()
-                .ReverseMap();
-            CreateMap<InvestmentSummary, UpdateInvestmentSummaryDto>()
-                .ReverseMap();
-            CreateMap<InvestmentSummary, InvestmentSummaryDto>()
-                .ReverseMap();
             CreateMap<SaleRecord, SaleRecordDto>()
                 .ReverseMap();
             CreateMap<SaleRecord, CreateSaleRecordDto>()
@@ -57,19 +51,20 @@ namespace ChickTrack.Service
                 .ReverseMap();
 
             //Poultry
-            CreateMap<BirdManagement, BirdManagementDto>()
-                .ReverseMap();
             CreateMap<Birds, BirdsDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
             CreateMap<BirdTransaction, BirdTransactionDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
             CreateMap<EggInventory, EggInventoryDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
             CreateMap<EggManagement, EggManagementDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
             CreateMap<EggTransaction, EggTransactionDto>()
-                .ReverseMap();
-            CreateMap<BirdManagement, CreateBirdManagementDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
             CreateMap<Birds, CreateBirdsDto>()
                 .ReverseMap();

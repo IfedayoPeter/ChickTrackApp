@@ -22,13 +22,11 @@ namespace ChickTrack.Service
             //Financials
             services.AddScoped<IExpensesService, ExpensesService>();
             services.AddScoped<IInvestmentService, InvestmentService>();
-            services.AddScoped<IInvestmentSummaryService, InvestmentSummaryService>();
             services.AddScoped<ISaleRecordService, SalesRecordService>();
             services.AddScoped<ITotalSalesService, TotalSalesService>();
 
             //Poultry
             services.AddScoped<IBirdService, BirdService>();
-            services.AddScoped<IBirdManagementService, BirdManagementService>();
             services.AddScoped<IBirdTransactionService, BirdTransactionService>();
             services.AddScoped<IBirdTransactionService, BirdTransactionService>();
             services.AddScoped<IEggInventoryService, EggInventoryService>();

@@ -6,10 +6,11 @@ namespace ChickTrack.Domain.DataTransferObjects.Poultry
     {
         public string Code { get; set; }
         public DateTime Date { get; set; }
-        public string UserId { get; set; }
-        public int BirdsLost { get; set; }
-        public int BirdsSold { get; set; }
-        public GenderEnum Gender { get; set; } // Male, Female, Chicks
-        public decimal Amount { get; set; }
+        public string InvestorId { get; set; }
+        public ActionTypeEnum ActionType { get; set; }
+        public int Quantity { get; set; }
+        public GenderEnum Gender { get; set; } 
+        public decimal Price { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using ChickTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChickTrack.Data.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250411092702_updateBirdTransaction")]
+    partial class updateBirdTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,6 +457,63 @@ namespace ChickTrack.Data.Migrations
                     b.ToTable("TotalSales", (string)null);
                 });
 
+            modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdManagement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<long>("BirdTransactionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InvestorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvestorId");
+
+                    b.ToTable("BirdManagements", (string)null);
+                });
+
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdTransaction", b =>
                 {
                     b.Property<long>("Id")
@@ -464,6 +524,9 @@ namespace ChickTrack.Data.Migrations
 
                     b.Property<int>("ActionType")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -493,9 +556,6 @@ namespace ChickTrack.Data.Migrations
 
                     b.Property<DateTime>("LastModifiedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -535,9 +595,6 @@ namespace ChickTrack.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("FemaleBirds")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HatchedBirds")
                         .HasColumnType("int");
 
                     b.Property<string>("InvestorId")
@@ -891,6 +948,17 @@ namespace ChickTrack.Data.Migrations
                         .HasForeignKey("FeedSalesUnitId");
 
                     b.Navigation("FeedSalesUnit");
+                });
+
+            modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdManagement", b =>
+                {
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
+                        .WithMany()
+                        .HasForeignKey("InvestorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Investor");
                 });
 
             modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.BirdTransaction", b =>

@@ -20,19 +20,19 @@ namespace ChickTrack.API.Controllers.Financial
         [HttpPost]
         public async Task<ActionResult> CreateSaleRecord([FromBody] CreateSaleRecordDto request)
         {
-            var response = await _service.CreateSalesRecord(request);
+            var response = await _service.CreateAsync(request);
             return Ok(response);
         }
         [HttpPut]
         public async Task<ActionResult> UpdateSaleRecord(long id, [FromBody] UpdateSalesRecordDto request)
         {
-            var response = await UpdateAsync(id, request);
+            var response = await _service.UpdateAsync(id, request);
             return Ok(response);
         }
         [HttpDelete]
         public async Task<ActionResult> RemoveSaleRecord(long id)
         {
-            var response = await RemoveAsync(id);
+            var response = await _service.DeleteAsync(id);
             return Ok(response);
         }
         [HttpPost("import")]

@@ -11,15 +11,17 @@ namespace ChickTrack.API.Controllers
     [ApiController]
     public class BirdTransactionController : MSSQLBaseController<BirdTransaction, BirdTransactionDto, long>
     {
+        private readonly IBirdTransactionService _service;
         public BirdTransactionController(IBirdTransactionService service) : base(service)
         {
+            _service = service;
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateBirdTransaction([FromBody] CreateBirdTransactionDto request)
         {
 
-            var response = await CreateAsync(request);
+            var response = await _service.CreateAsync(request);
 
             return Ok(response);
         }

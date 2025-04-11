@@ -1,9 +1,11 @@
+using ChickTrack.Domain.Enums;
+
 namespace ChickTrack.Domain.DataTransferObjects.Poultry
 {
     public class CreateBirdsDto
     {
         public string Code { get; set; }
-        public string UserId { get; set; }
+        public string InvestorId { get; set; }
         public int MaleBirds { get; set; }
         public int FemaleBirds { get; set; }
         public int Chicks { get; set; }

@@ -1,10 +1,13 @@
+using ChickTrack.Domain.Enums;
+
 namespace ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos
 {
     public class BirdsDto
     {
         public long Id { get; set; }
         public string Code { get; set; }
-        public string UserId { get; set; }
+        public string InvestorId { get; set; }
+        public string FullName { get; set; }
         public int MaleBirds { get; set; }
         public int FemaleBirds { get; set; }
         public int Chicks { get; set; }

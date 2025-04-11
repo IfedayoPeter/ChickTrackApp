@@ -12,9 +12,10 @@ namespace ChickTrack.Domain.Entities.Poultry
         public int BirdsSold { get; set; }
         public int BirdsLost { get; set; }
         public int PersonalConsumption { get; set; }
+        public int HatchedBirds { get; set; }
 
-        public int TotalAvailableBirds => MaleBirds + FemaleBirds + Chicks - BirdsSold - BirdsLost - PersonalConsumption;
         public int TotalBirds => MaleBirds + FemaleBirds + Chicks + BirdsSold + BirdsLost + PersonalConsumption;
+        public int TotalAvailableBirds => MaleBirds + FemaleBirds + Chicks;
 
         public virtual BaseUser Investor { get; set; }
     }
