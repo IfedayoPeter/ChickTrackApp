@@ -25,7 +25,6 @@ namespace ChickTrack.Data
         public DbSet<Birds> Birds { get; set; }
         public DbSet<BirdTransaction> BirdTransactions { get; set; }
         public DbSet<EggInventory> EggInventories { get; set; }
-        public DbSet<EggManagement> EggManagements { get; set; }
         public DbSet<EggTransaction> EggTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -64,9 +63,6 @@ namespace ChickTrack.Data
                 .HasKey(x => x.Id);
             builder.Entity<EggInventory>()
                 .ToTable("EggInventories")
-                .HasKey(x => x.Id);
-            builder.Entity<EggManagement>()
-                .ToTable("EggManagements")
                 .HasKey(x => x.Id);
             builder.Entity<EggTransaction>()
                 .ToTable("EggTransactions")

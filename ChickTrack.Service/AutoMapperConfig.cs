@@ -60,9 +60,6 @@ namespace ChickTrack.Service
             CreateMap<EggInventory, EggInventoryDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
-            CreateMap<EggManagement, EggManagementDto>()
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
-                .ReverseMap();
             CreateMap<EggTransaction, EggTransactionDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Investor.FullName))
                 .ReverseMap();
@@ -71,8 +68,6 @@ namespace ChickTrack.Service
             CreateMap<BirdTransaction, CreateBirdTransactionDto>()
                 .ReverseMap();
             CreateMap<EggInventory, CreateEggInventoryDto>()
-                .ReverseMap();
-            CreateMap<EggManagement, CreateEggManagementDto>()
                 .ReverseMap();
             CreateMap<EggTransaction, CreateEggTransactionDto>()
                 .ReverseMap();

@@ -14,7 +14,6 @@ namespace ChickTrack.Service.Implementations.Poultry
 {
     public class BirdTransactionService : MSSQLBaseService<BirdTransaction, long>, IBirdTransactionService
     {
-
         private readonly IMSSQLRepository<BirdTransaction, long> _birdTransaction;
         private readonly IMSSQLRepository<Birds, long> _birds;
         private readonly IApplicationDbContext _context;

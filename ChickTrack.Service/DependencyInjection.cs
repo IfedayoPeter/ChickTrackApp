@@ -28,11 +28,8 @@ namespace ChickTrack.Service
             //Poultry
             services.AddScoped<IBirdService, BirdService>();
             services.AddScoped<IBirdTransactionService, BirdTransactionService>();
-            services.AddScoped<IBirdTransactionService, BirdTransactionService>();
-            services.AddScoped<IEggInventoryService, EggInventoryService>();
+            services.AddScoped<IEggInventoryService, EggInventoryService>();;
             services.AddScoped<IEggTransactionService, EggTransactionService>();
-            services.AddScoped<IEggTransactionService, EggTransactionService>();
-            services.AddScoped<IEggInventoryService, EggInventoryService>();
 
 
             var mapperConfig = new MapperConfiguration(cfg =>
