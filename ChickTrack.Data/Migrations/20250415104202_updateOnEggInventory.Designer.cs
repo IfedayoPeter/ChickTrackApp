@@ -4,6 +4,7 @@ using ChickTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChickTrack.Data.Migrations
 {
     [DbContext(typeof(CoreDbContext))]
-    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415104202_updateOnEggInventory")]
+    partial class updateOnEggInventory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -592,7 +595,7 @@ namespace ChickTrack.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InvestorId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -607,6 +610,8 @@ namespace ChickTrack.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InvestorId");
 
                     b.ToTable("EggTransactions", (string)null);
                 });
@@ -793,6 +798,15 @@ namespace ChickTrack.Data.Migrations
                         .HasForeignKey("InvestorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Investor");
+                });
+
+            modelBuilder.Entity("ChickTrack.Domain.Entities.Poultry.EggTransaction", b =>
+                {
+                    b.HasOne("ChickTrack.Base.Domain.Entities.BaseUser", "Investor")
+                        .WithMany()
+                        .HasForeignKey("InvestorId");
 
                     b.Navigation("Investor");
                 });

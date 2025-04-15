@@ -7,8 +7,7 @@ namespace ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos
         public long Id { get; set; }
         public string Code { get; set; }
         public DateTime Date { get; set; }
-        public string InvestorId { get; set; }
-        public string FullName { get; set; }
+        public string? InvestorId { get; set; }
         public ActionTypeEnum ActionType { get; set; }
         public string ActionTypeName { get { return ActionType.ToString(); } }
         public int Quantity { get; set; }

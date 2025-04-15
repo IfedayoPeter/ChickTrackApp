@@ -5,13 +5,11 @@ namespace ChickTrack.Domain.Entities.Poultry
 {
     public class EggInventory : BaseEntity<long>
     {
-        public string InvestorId { get; set; }
         public int Sold { get; set; }
         public int Hatched { get; set; }
         public int PersonalConsumption { get; set; }
+        public int Stock { get; set; }
 
-        public int TotalEggs => Sold + Hatched + PersonalConsumption;
-
-        public virtual BaseUser Investor { get; set; }
+        public int TotalEggs => Sold + Hatched + PersonalConsumption + Stock;
     }
 }

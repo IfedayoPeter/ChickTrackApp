@@ -9,6 +9,7 @@ using Lagetronix.Rapha.Base.Common.Domain.Common;
 using Lagetronix.Rapha.Base.Common.Domain.Utilities;
 using ChickTrack.Domain.DataTransferObjects.Poultry;
 using ChickTrack.Domain.Enums;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace ChickTrack.Service.Implementations.Poultry
 {
@@ -40,31 +41,67 @@ namespace ChickTrack.Service.Implementations.Poultry
                 var eggTransaction = _mapper.Map<EggTransaction>(eggTransactionDto);
                 var response = await _eggTransactionRepository.CreateAsync(eggTransaction);
 
-                if ( eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption)
+                await _context.SaveChangesAsync();
+                var existingEggTransaction = await _eggTransactionRepository.GetSingleAsync(x => x.Id == response.Id);
+                if (existingEggTransaction == null)
                 {
-                    var eggInventory = await _eggInventoryRepository.GetSingleAsync(x => x.InvestorId == eggTransactionDto.InvestorId);
-
+                    result.SetError("Failed to record", "Transaction record was unsuccessful!");
+                    return result;
+                }
+                else if (eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption && string.IsNullOrEmpty(eggTransactionDto.InvestorId))
+                {
+                    result.SetError("Investor ID is required", "Investor ID is required for personal consumption transactions");
+                    return result;
+                }
+                else
+                {
+                    var allInventories = await _eggInventoryRepository.GetAllAsync();
+                    var eggInventory = allInventories.FirstOrDefault();
 
                     if (eggInventory == null)
                     {
                         eggInventory = new EggInventory
                         {
                             Code = RandomGenerator.RandomString(10),
-                            InvestorId = eggTransactionDto.InvestorId,
-                            Sold = 0,
-                            Hatched = 0,
+                            Sold = eggTransactionDto.ActionType == ActionTypeEnum.Sell ? eggTransactionDto.Quantity : 0,
+                            Hatched = eggTransactionDto.ActionType == ActionTypeEnum.Hatch ? eggTransactionDto.Quantity : 0,
                             PersonalConsumption = eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption ? eggTransactionDto.Quantity : 0,
+                            Stock = eggTransactionDto.ActionType == ActionTypeEnum.Add ? eggTransactionDto.Quantity : 0,
                         };
                         await _eggInventoryRepository.CreateAsync(eggInventory);
                     }
                     else
                     {
-                        eggInventory.PersonalConsumption = eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption ? eggTransactionDto.Quantity : 0;
+                        if (eggInventory.Stock < eggTransactionDto.Quantity)
+                        { result.SetError("Insufficient stock", "Not enough stock to complete the transaction"); return result; }
+
+                        switch (eggTransactionDto.ActionType)
+                        {
+                            case ActionTypeEnum.Sell:
+                                eggInventory.Sold += eggTransactionDto.Quantity;
+                                eggInventory.Stock -= eggTransactionDto.Quantity;
+                                break;
+                            case ActionTypeEnum.Hatch:
+                                eggInventory.Hatched += eggTransactionDto.Quantity;
+                                eggInventory.Stock -= eggTransactionDto.Quantity;
+                                break;
+                            case ActionTypeEnum.PersonalConsumption:
+                                eggInventory.PersonalConsumption += eggTransactionDto.Quantity;
+                                eggInventory.Stock -= eggTransactionDto.Quantity;
+                                break;
+                            case ActionTypeEnum.Add:
+                                eggInventory.Stock += eggTransactionDto.Quantity;
+                                break;
+                            default:
+                                break;
+                        }
+
                         await _eggInventoryRepository.UpdateAsync(eggInventory.Id, eggInventory);
                     }
+                    await _context.SaveChangesAsync();
                 }
-                
-                if (response == null)
+
+                    if (response == null)
                 {
                     result.SetError($"{typeof(EggTransaction).Name} not created", $"{typeof(EggTransaction).Name} not created");
                 }
@@ -92,19 +129,25 @@ namespace ChickTrack.Service.Implementations.Poultry
                     return result;
                 }
 
-                var inventory = await _eggInventoryRepository.GetSingleAsync(x => x.InvestorId == transaction.InvestorId);
+                var inventory = (await _eggInventoryRepository.GetAllAsync()).FirstOrDefault();
                 if (inventory != null)
                 {
                     switch (transaction.ActionType)
                     {
                         case ActionTypeEnum.PersonalConsumption:
                             inventory.PersonalConsumption -= transaction.Quantity;
+                            inventory.Stock += transaction.Quantity;
                             break;
                         case ActionTypeEnum.Hatch:
                             inventory.Hatched -= transaction.Quantity;
+                            inventory.Stock += transaction.Quantity;
                             break;
                         case ActionTypeEnum.Sell:
                             inventory.Sold -= transaction.Quantity;
+                            inventory.Stock += transaction.Quantity;
+                            break;
+                        case ActionTypeEnum.Add:
+                            inventory.Stock -= transaction.Quantity;
                             break;
                     }
 
@@ -137,42 +180,63 @@ namespace ChickTrack.Service.Implementations.Poultry
                     return result;
                 }
 
-                var inventory = await _eggInventoryRepository.GetSingleAsync(x => x.InvestorId == existing.InvestorId);
-                if (inventory == null)
+                else if (eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption && string.IsNullOrEmpty(eggTransactionDto.InvestorId))
                 {
-                    result.SetError("Inventory not found", "No egg inventory for this investor");
+                    result.SetError("Investor ID is required", "Investor ID is required for personal consumption transactions");
                     return result;
                 }
 
-                // Reverse the previous impact
+                var inventory = (await _eggInventoryRepository.GetAllAsync()).FirstOrDefault();
+                if (inventory == null)
+                {
+                    result.SetError("Inventory not found", "No egg inventory available");
+                    return result;
+                }
+
+                // Reverse old values
                 switch (existing.ActionType)
                 {
                     case ActionTypeEnum.PersonalConsumption:
                         inventory.PersonalConsumption -= existing.Quantity;
+                        inventory.Stock += existing.Quantity;
                         break;
                     case ActionTypeEnum.Hatch:
                         inventory.Hatched -= existing.Quantity;
+                        inventory.Stock += existing.Quantity;
                         break;
                     case ActionTypeEnum.Sell:
                         inventory.Sold -= existing.Quantity;
+                        inventory.Stock += existing.Quantity;
+                        break;
+                    case ActionTypeEnum.Add:
+                        inventory.Stock -= existing.Quantity;
                         break;
                 }
 
-                // Apply the new values
+                if (inventory.Stock < eggTransactionDto.Quantity)
+                { result.SetError("Insufficient stock", "Not enough stock to complete the transaction"); return result; }
+
+                // Apply new values
                 switch (eggTransactionDto.ActionType)
                 {
                     case ActionTypeEnum.PersonalConsumption:
                         inventory.PersonalConsumption += eggTransactionDto.Quantity;
+                        inventory.Stock -= eggTransactionDto.Quantity;
                         break;
                     case ActionTypeEnum.Hatch:
                         inventory.Hatched += eggTransactionDto.Quantity;
+                        inventory.Stock -= eggTransactionDto.Quantity;
                         break;
                     case ActionTypeEnum.Sell:
                         inventory.Sold += eggTransactionDto.Quantity;
+                        inventory.Stock -= eggTransactionDto.Quantity;
+                        break;
+                    case ActionTypeEnum.Add:
+                        inventory.Stock += eggTransactionDto.Quantity;
                         break;
                 }
 
-                // Update the transaction
+                // Update transaction
                 _mapper.Map(eggTransactionDto, existing);
                 await _eggTransactionRepository.UpdateAsync(id, existing);
                 await _eggInventoryRepository.UpdateAsync(inventory.Id, inventory);
@@ -187,7 +251,5 @@ namespace ChickTrack.Service.Implementations.Poultry
 
             return result;
         }
-
-
     }
 }

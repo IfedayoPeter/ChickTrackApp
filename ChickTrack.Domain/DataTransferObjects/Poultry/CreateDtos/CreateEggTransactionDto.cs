@@ -6,7 +6,7 @@ namespace ChickTrack.Domain.DataTransferObjects.Poultry
     {
         public string Code { get; set; }
         public DateTime Date { get; set; }
-        public string InvestorId { get; set; }
+        public string? InvestorId { get; set; }
         public ActionTypeEnum ActionType { get; set; }
         public int Quantity { get; set; }
         public decimal? Price { get; set; }
