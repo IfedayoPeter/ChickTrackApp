@@ -31,7 +31,7 @@ namespace ChickTrack.Service.Implementations.Poultry
             _mapper = mapper;
         }
 
-        public async Task<Result<EggTransactionDto>> CreateEggTransaction(CreateEggTransactionDto eggTransactionDto)
+        public async Task<Result<EggTransactionDto>> CreateAsync(CreateEggTransactionDto eggTransactionDto)
         {
             var result = new Result<EggTransactionDto>(false);
             try
@@ -59,7 +59,7 @@ namespace ChickTrack.Service.Implementations.Poultry
                     }
                     else
                     {
-                        eggInventory.PersonalConsumption = eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption ? eggTransactionDto.Quantity : 0,
+                        eggInventory.PersonalConsumption = eggTransactionDto.ActionType == ActionTypeEnum.PersonalConsumption ? eggTransactionDto.Quantity : 0;
                         await _eggInventoryRepository.UpdateAsync(eggInventory.Id, eggInventory);
                     }
                 }
@@ -85,54 +85,109 @@ namespace ChickTrack.Service.Implementations.Poultry
             var result = new Result<bool>(false);
             try
             {
-                var response = await _eggTransactionRepository.DeleteAsync(id);
-                if (response == null)
+                var transaction = await _eggTransactionRepository.GetSingleAsync(x => x.Id == id);
+                if (transaction == null)
                 {
-                    result.SetError($"{typeof(EggTransaction).Name} not deleted", $"{typeof(EggTransaction).Name} not deleted");
+                    result.SetError("Transaction not found", "No egg transaction with this ID");
+                    return result;
                 }
-                else
+
+                var inventory = await _eggInventoryRepository.GetSingleAsync(x => x.InvestorId == transaction.InvestorId);
+                if (inventory != null)
                 {
-                    result.SetSuccess(true, $"{typeof(EggTransaction).Name} deleted successfully!");
+                    switch (transaction.ActionType)
+                    {
+                        case ActionTypeEnum.PersonalConsumption:
+                            inventory.PersonalConsumption -= transaction.Quantity;
+                            break;
+                        case ActionTypeEnum.Hatch:
+                            inventory.Hatched -= transaction.Quantity;
+                            break;
+                        case ActionTypeEnum.Sell:
+                            inventory.Sold -= transaction.Quantity;
+                            break;
+                    }
+
+                    await _eggInventoryRepository.UpdateAsync(inventory.Id, inventory);
                 }
+
+                await _eggTransactionRepository.DeleteAsync(id);
+                await _context.SaveChangesAsync();
+
+                result.SetSuccess(true, "Egg transaction deleted successfully");
             }
             catch (Exception ex)
             {
-                result.SetError(ex.ToString(), $"Error while deleting {typeof(EggTransaction).Name}");
+                result.SetError(ex.Message, "Error deleting egg transaction");
             }
+
             return result;
         }
 
-        public async Task<Result<bool>> UpdateAsync(long id, EggTransactionDto eggTransactionDto)
+
+        public async Task<Result<bool>> UpdateAsync(long id, UpdateEggTransactionDto eggTransactionDto)
         {
             var result = new Result<bool>(false);
             try
             {
-                var eggTransaction = await _eggTransactionRepository.GetSingleAsync(x => x.Id == id);
-                if (eggTransaction == null)
+                var existing = await _eggTransactionRepository.GetSingleAsync(x => x.Id == id);
+                if (existing == null)
                 {
-                    result.SetError($"{typeof(EggTransaction).Name} not found", $"{typeof(EggTransaction).Name} not found");
+                    result.SetError("Transaction not found", "No egg transaction with this ID");
                     return result;
                 }
-                eggTransaction.EggType = eggTransactionDto.EggType;
-                eggTransaction.EggsBought = eggTransactionDto.EggsBought;
-                eggTransaction.EggsSold = eggTransactionDto.EggsSold;
-                eggTransaction.AvailableEggs = eggTransactionDto.AvailableEggs;
-                var response = await _eggTransactionRepository.UpdateAsync(eggTransaction);
-                if (response == null)
+
+                var inventory = await _eggInventoryRepository.GetSingleAsync(x => x.InvestorId == existing.InvestorId);
+                if (inventory == null)
                 {
-                    result.SetError($"{typeof(EggTransaction).Name} not updated", $"{typeof(EggTransaction).Name} not updated");
+                    result.SetError("Inventory not found", "No egg inventory for this investor");
+                    return result;
                 }
-                else
+
+                // Reverse the previous impact
+                switch (existing.ActionType)
                 {
-                    result.SetSuccess(true, $"{typeof(EggTransaction).Name} updated successfully!");
+                    case ActionTypeEnum.PersonalConsumption:
+                        inventory.PersonalConsumption -= existing.Quantity;
+                        break;
+                    case ActionTypeEnum.Hatch:
+                        inventory.Hatched -= existing.Quantity;
+                        break;
+                    case ActionTypeEnum.Sell:
+                        inventory.Sold -= existing.Quantity;
+                        break;
                 }
+
+                // Apply the new values
+                switch (eggTransactionDto.ActionType)
+                {
+                    case ActionTypeEnum.PersonalConsumption:
+                        inventory.PersonalConsumption += eggTransactionDto.Quantity;
+                        break;
+                    case ActionTypeEnum.Hatch:
+                        inventory.Hatched += eggTransactionDto.Quantity;
+                        break;
+                    case ActionTypeEnum.Sell:
+                        inventory.Sold += eggTransactionDto.Quantity;
+                        break;
+                }
+
+                // Update the transaction
+                _mapper.Map(eggTransactionDto, existing);
+                await _eggTransactionRepository.UpdateAsync(id, existing);
+                await _eggInventoryRepository.UpdateAsync(inventory.Id, inventory);
+                await _context.SaveChangesAsync();
+
+                result.SetSuccess(true, "Egg transaction updated successfully");
             }
             catch (Exception ex)
             {
-                result.SetError(ex.ToString(), $"Error while updating {typeof(EggTransaction).Name}");
+                result.SetError(ex.Message, "Error updating egg transaction");
             }
+
             return result;
         }
+
 
     }
 }

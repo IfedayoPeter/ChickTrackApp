@@ -11,15 +11,17 @@ namespace ChickTrack.API.Controllers
     [ApiController]
     public class EggTransactionController : MSSQLBaseController<EggTransaction, EggTransactionDto, long>
     {
+        private readonly IEggTransactionService _service;
         public EggTransactionController(IEggTransactionService service) : base(service)
         {
+            _service = service;
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateEggTransaction([FromBody] CreateEggTransactionDto request)
         {
 
-            var response = await CreateAsync(request);
+            var response = await _service.CreateAsync(request);
 
             return Ok(response);
         }
@@ -28,7 +30,7 @@ namespace ChickTrack.API.Controllers
         public async Task<ActionResult> UpdateEggTransaction(long id, [FromBody] UpdateEggTransactionDto request)
         {
 
-            var response = await UpdateAsync(id, request);
+            var response = await _service.UpdateAsync(id, request);
 
             return Ok(response);
         }
@@ -37,7 +39,7 @@ namespace ChickTrack.API.Controllers
         public async Task<ActionResult> RemoveEggTransaction(long id)
         {
 
-            var response = await RemoveAsync(id);
+            var response = await _service.DeleteAsync(id);
 
             return Ok(response);
         }

@@ -1,3 +1,5 @@
+using ChickTrack.Domain.Enums;
+
 namespace ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos
 {
     public class EggTransactionDto
@@ -7,10 +9,10 @@ namespace ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos
         public DateTime Date { get; set; }
         public string InvestorId { get; set; }
         public string FullName { get; set; }
-        public int Hatched { get; set; }
-        public int Sold { get; set; }
-        public int PersonalCollection { get; set; }
-        public decimal? Amount { get; set; }
+        public ActionTypeEnum ActionType { get; set; }
+        public string ActionTypeName { get { return ActionType.ToString(); } }
+        public int Quantity { get; set; }
+        public decimal? Price { get; set; }
         public string Description { get; set; }
     }
 }
