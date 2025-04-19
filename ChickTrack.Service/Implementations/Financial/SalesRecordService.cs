@@ -19,12 +19,14 @@ namespace ChickTrack.Service.Implementations.Financial
         private readonly IMSSQLRepository<SaleRecord, long> _saleRecord;
         private readonly IMSSQLRepository<TotalSales, long> _totalSales;
         private readonly IMSSQLRepository<FeedLog, long> _feedLog;
+        private readonly IMSSQLRepository<FeedSalesUnit, long> _feedSalesUnit;
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         public SalesRecordService(
             IMSSQLRepository<SaleRecord, long> saleRecord,
             IMSSQLRepository<TotalSales, long> totalSales,
             IMSSQLRepository<FeedLog, long> feedLog,
+            IMSSQLRepository<FeedSalesUnit, long> feedSalesUnit,
             IApplicationDbContext context,
             IMapper mapper
         ) : base(saleRecord, context, mapper)
@@ -32,6 +34,7 @@ namespace ChickTrack.Service.Implementations.Financial
             _saleRecord = saleRecord;
             _totalSales = totalSales;
             _feedLog = feedLog;
+            _feedSalesUnit = feedSalesUnit;
             _context = context;
             _mapper = mapper;
         }
@@ -229,6 +232,112 @@ namespace ChickTrack.Service.Implementations.Financial
             }
             return result;
         }
+
+        public async Task<Result<List<long>>> ImportAsync(CreateSaleRecordDto[] saleRecordDtos)
+        {
+            var result = new Result<List<long>>(false);
+            var importedIds = new List<long>();
+
+            try
+            {
+                if (saleRecordDtos == null || saleRecordDtos.Length == 0)
+                {
+                    result.SetError("No data to import", "The import list is empty.");
+                    return result;
+                }
+
+                foreach (var dto in saleRecordDtos)
+                {
+                    dto.Code = RandomGenerator.RandomString(10);
+
+                    var saleRecord = _mapper.Map<SaleRecord>(dto);
+                    var created = await _saleRecord.CreateAsync(saleRecord);
+                    if (created == null)
+                        continue;
+
+                    importedIds.Add(created.Id);
+
+                    // Ensure FeedLog exists and is valid
+                    var feedLog = await _feedLog.GetSingleAsync(x => x.FeedBrand == dto.FeedBrand);
+
+                    if (dto.SalesType == Domain.Enums.SalesTypeEnum.Feed)
+                    {
+                        // Get the FeedSalesUnit by ID directly
+                        // Ensure that the nullable long (long?) is properly handled before passing it to a method expecting a non-nullable long (long).  
+
+                        var feedSalesUnit = dto.FeedSalesUnitId.HasValue
+                           ? await _feedSalesUnit.GetByIdAsync(dto.FeedSalesUnitId.Value)
+                           : null;
+
+                        if (dto.FeedSalesUnitId.HasValue && feedSalesUnit == null)
+                        {
+                            result.SetError("Invalid Feed Sales Unit", $"FeedSalesUnitId {dto.FeedSalesUnitId} is invalid");
+                            return result;
+                        }
+                        if (feedSalesUnit == null)
+                        {
+                            result.SetError("Invalid Feed Sales Unit", $"FeedSalesUnitId {dto.FeedSalesUnitId} is invalid");
+                            return result;
+                        }
+
+                        var unitQuantity = feedSalesUnit.unitQuantity;
+
+                        // Update TotalSales
+                        var totalSales = await _totalSales.GetSingleAsync(x => x.FeedBrand == dto.FeedBrand);
+                        if (totalSales == null)
+                        {
+                            totalSales = new TotalSales
+                            {
+                                Code = RandomGenerator.RandomString(10),
+                                FeedBrand = dto.FeedBrand ?? throw new ArgumentNullException(nameof(dto.FeedBrand)),
+                                BagsSold = unitQuantity,
+                                Amount = dto.Price,
+                                Profit = FeedProfitCalculator.CalculateProfit(dto.FeedBrand.ToString(), feedSalesUnit.unitName, dto.Quantity, dto.Price)
+                            };
+                            await _totalSales.CreateAsync(totalSales);
+                        }
+                        else
+                        {
+                            totalSales.BagsSold += unitQuantity;
+                            totalSales.Amount += dto.Price;
+                            totalSales.Profit += FeedProfitCalculator.CalculateProfit(dto.FeedBrand.ToString(), feedSalesUnit.unitName, dto.Quantity, dto.Price);
+                            await _totalSales.UpdateAsync(totalSales.Id, totalSales);
+                        }
+
+                        // Update FeedLog
+                        if (feedLog == null)
+                        {
+                            feedLog = new FeedLog
+                            {
+                                Code = RandomGenerator.RandomString(10),
+                                FeedBrand = dto.FeedBrand ?? throw new ArgumentNullException(nameof(dto.FeedBrand)),
+                                BagsSold = unitQuantity,
+                                BagsBought = 0,
+                                AvailableBags = 0 - unitQuantity
+                            };
+                            await _feedLog.CreateAsync(feedLog);
+                        }
+                        else
+                        {
+                            feedLog.BagsSold += unitQuantity;
+                            feedLog.AvailableBags = feedLog.BagsBought - feedLog.BagsSold;
+                            await _feedLog.UpdateAsync(feedLog.Id, feedLog);
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.SetSuccess(importedIds, "Sales records imported successfully.");
+            }
+            catch (Exception ex)
+            {
+                result.SetError(ex.ToString(), "Error while importing Sale Records");
+            }
+
+            return result;
+        }
+
 
 
     }

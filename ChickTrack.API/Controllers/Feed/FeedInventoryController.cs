@@ -18,25 +18,25 @@ namespace ChickTrack.API.Controllers.Feed
         [HttpPost]
         public async Task<ActionResult> CreateFeedInventory([FromBody] FeedInventoryDto request)
         {
-            var response = await _service.CreateFeedInventory(request);
+            var response = await _service.CreateAsync(request);
             return Ok(response);
         }
         [HttpPut]
         public async Task<ActionResult> UpdateFeedInventory(long id, [FromBody] FeedInventoryDto request)
         {
-            var response = await UpdateAsync(id, request);
+            var response = await _service.UpdateAsync(id, request);
             return Ok(response);
         }
         [HttpDelete]
         public async Task<ActionResult> RemoveFeedInventory(long id)
         {
-            var response = await RemoveAsync(id);
+            var response = await _service.DeleteAsync(id);
             return Ok(response);
         }
         [HttpPost("import")]
         public async Task<ActionResult> Import([FromBody] FeedInventoryDto[] requests)
         {
-            var response = await ImportAsync(requests);
+            var response = await _service.ImportAsync(requests);
             return Ok(response);
         }
     }

@@ -36,9 +36,9 @@ namespace ChickTrack.API.Controllers.Financial
             return Ok(response);
         }
         [HttpPost("import")]
-        public async Task<ActionResult> Import([FromBody] SaleRecordDto[] requests)
+        public async Task<ActionResult> Import([FromBody] CreateSaleRecordDto[] requests)
         {
-            var response = await ImportAsync(requests);
+            var response = await _service.ImportAsync(requests);
             return Ok(response);
         }
     }

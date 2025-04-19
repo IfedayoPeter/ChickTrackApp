@@ -11,5 +11,6 @@ namespace ChickTrack.Service.Interfaces.Financial
         Task<Result<SaleRecordDto>> CreateAsync(CreateSaleRecordDto saleRecordDto);
         Task<Result<SaleRecordDto>> UpdateAsync(long id, UpdateSalesRecordDto saleRecordDto);
         Task<Result<bool>> DeleteAsync(long id);
+        Task<Result<List<long>>> ImportAsync(CreateSaleRecordDto[] saleRecordDtos);
     }
 }
