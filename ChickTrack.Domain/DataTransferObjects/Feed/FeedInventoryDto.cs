@@ -10,6 +10,6 @@ namespace ChickTrack.Domain.DataTransferObjects.Feed
         public string FeedBrandName { get { return FeedBrand.ToString(); } }
         public decimal BagsBought { get; set; }
         public decimal Amount { get; set; }
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
     }
 }

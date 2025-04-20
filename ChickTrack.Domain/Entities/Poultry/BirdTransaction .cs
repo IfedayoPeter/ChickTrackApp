@@ -6,7 +6,7 @@ namespace ChickTrack.Domain.Entities.Poultry
 {
     public class BirdTransaction : BaseEntity<long>
     {
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
         public string InvestorId { get; set; }
         public GenderEnum Gender { get; set; } 
         public ActionTypeEnum ActionType { get; set; } 

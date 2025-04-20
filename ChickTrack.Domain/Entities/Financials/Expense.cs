@@ -5,7 +5,7 @@ namespace ChickTrack.Domain.Entities.Financials
 {
     public class Expense : BaseEntity<long>
     {
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
         public string InvestorId { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }
