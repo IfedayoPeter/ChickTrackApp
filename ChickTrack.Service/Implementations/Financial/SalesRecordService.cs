@@ -5,6 +5,7 @@ using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
 using ChickTrack.Domain.Entities.Feed;
 using ChickTrack.Domain.Entities.Financials;
 using ChickTrack.Service.Helpers;
+using ChickTrack.Service.Interfaces.Feed;
 using ChickTrack.Service.Interfaces.Financial;
 using Lagetronix.Rapha.Base.Common.Domain.Common;
 using Lagetronix.Rapha.Base.Common.Domain.Utilities;
@@ -22,13 +23,15 @@ namespace ChickTrack.Service.Implementations.Financial
         private readonly IMSSQLRepository<FeedSalesUnit, long> _feedSalesUnit;
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly FeedProfitCalculator _feedProfitCalculator;
         public SalesRecordService(
             IMSSQLRepository<SaleRecord, long> saleRecord,
             IMSSQLRepository<TotalSales, long> totalSales,
             IMSSQLRepository<FeedLog, long> feedLog,
             IMSSQLRepository<FeedSalesUnit, long> feedSalesUnit,
             IApplicationDbContext context,
-            IMapper mapper
+            IMapper mapper,
+            FeedProfitCalculator feedProfitCalculator
         ) : base(saleRecord, context, mapper)
         {
             _saleRecord = saleRecord;
@@ -37,6 +40,7 @@ namespace ChickTrack.Service.Implementations.Financial
             _feedSalesUnit = feedSalesUnit;
             _context = context;
             _mapper = mapper;
+            _feedProfitCalculator = feedProfitCalculator;
         }
 
         public async Task<Result<SaleRecordDto>> CreateAsync(CreateSaleRecordDto saleRecordDto)
@@ -69,7 +73,7 @@ namespace ChickTrack.Service.Implementations.Financial
                             FeedBrand = saleRecordDto.FeedBrand.HasValue ? saleRecordDto.FeedBrand.Value : throw new ArgumentNullException(nameof(saleRecordDto.FeedBrand)),
                             BagsSold = existingSalesRecord.FeedSalesUnit.unitQuantity,
                             Amount = saleRecordDto.Price,
-                            Profit = FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecord.Quantity, saleRecord.Price)
+                            Profit = await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecord.Quantity, saleRecord.Price)
                         };
                         await _totalSales.CreateAsync(totalSales);
                     }
@@ -77,11 +81,11 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold += existingSalesRecord.FeedSalesUnit.unitQuantity;
                         totalSales.Amount += saleRecordDto.Price;
-                        totalSales.Profit += FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
+                        totalSales.Profit += await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
-                    
+
                     if (feedLog != null)
                     {
                         feedLog.BagsSold += existingSalesRecord.FeedSalesUnit.unitQuantity;
@@ -140,7 +144,7 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold -= existingSale.FeedSalesUnit.unitQuantity;
                         totalSales.Amount -= existingSale.Price;
-                        totalSales.Profit -= FeedProfitCalculator.CalculateProfit(existingSale.FeedBrand.ToString(), existingSale.FeedSalesUnit.unitName, existingSale.Quantity, existingSale.Price);
+                        totalSales.Profit -= await _feedProfitCalculator.CalculateProfit(existingSale.FeedBrand.ToString(), existingSale.FeedSalesUnit.unitName, existingSale.Quantity, existingSale.Price);
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
@@ -166,7 +170,7 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold += updatedRecord.FeedSalesUnit.unitQuantity;
                         totalSales.Amount += saleRecordDto.Price;
-                        totalSales.Profit += FeedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), updatedRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
+                        totalSales.Profit += await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), updatedRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
@@ -209,7 +213,7 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold -= sale.FeedSalesUnit.unitQuantity;
                         totalSales.Amount -= sale.Price;
-                        totalSales.Profit -= FeedProfitCalculator.CalculateProfit(sale.FeedBrand.ToString(), sale.FeedSalesUnit.unitName, sale.Quantity, sale.Price);
+                        totalSales.Profit -= await _feedProfitCalculator.CalculateProfit(sale.FeedBrand.ToString(), sale.FeedSalesUnit.unitName, sale.Quantity, sale.Price);
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
@@ -233,6 +237,7 @@ namespace ChickTrack.Service.Implementations.Financial
             return result;
         }
 
+
         public async Task<Result<List<long>>> ImportAsync(CreateSaleRecordDto[] saleRecordDtos)
         {
             var result = new Result<List<long>>(false);
@@ -246,88 +251,107 @@ namespace ChickTrack.Service.Implementations.Financial
                     return result;
                 }
 
-                foreach (var dto in saleRecordDtos)
+                // Group sales by FeedBrand for batch processing
+                var salesByBrand = saleRecordDtos
+                    .Where(dto => dto.FeedBrand != null)
+                    .GroupBy(dto => dto.FeedBrand.Value);
+
+                // Get all existing TotalSales records in one query
+                var brandIds = salesByBrand.Select(g => g.Key).ToList();
+                var existingTotalSales = (await _totalSales.GetAllAsync(x => brandIds.Contains(x.FeedBrand)))
+                    .ToDictionary(ts => ts.FeedBrand);
+
+                // Process each brand group
+                foreach (var brandGroup in salesByBrand)
                 {
-                    dto.Code = RandomGenerator.RandomString(10);
+                    var feedBrand = brandGroup.Key;
+                    var brandSales = brandGroup.ToList();
 
-                    var saleRecord = _mapper.Map<SaleRecord>(dto);
-                    var created = await _saleRecord.CreateAsync(saleRecord);
-                    if (created == null)
-                        continue;
+                    // Get or create TotalSales record (only once per brand)
+                    var totalSales = existingTotalSales.TryGetValue(feedBrand, out var ts)
+                        ? ts
+                        : new TotalSales
+                        {
+                            Code = RandomGenerator.RandomString(10),
+                            FeedBrand = feedBrand,
+                            BagsSold = 0,
+                            Amount = 0,
+                            Profit = 0
+                        };
 
-                    importedIds.Add(created.Id);
+                    bool isNewTotalSales = totalSales.Id == 0;
 
-                    // Ensure FeedLog exists and is valid
-                    var feedLog = await _feedLog.GetSingleAsync(x => x.FeedBrand == dto.FeedBrand);
-
-                    if (dto.SalesType == Domain.Enums.SalesTypeEnum.Feed)
+                    // Process each sale in this brand group
+                    foreach (var dto in brandSales)
                     {
-                        // Get the FeedSalesUnit by ID directly
-                        // Ensure that the nullable long (long?) is properly handled before passing it to a method expecting a non-nullable long (long).  
+                        dto.Code = RandomGenerator.RandomString(10);
 
-                        var feedSalesUnit = dto.FeedSalesUnitId.HasValue
-                           ? await _feedSalesUnit.GetByIdAsync(dto.FeedSalesUnitId.Value)
-                           : null;
+                        var saleRecord = _mapper.Map<SaleRecord>(dto);
+                        var created = await _saleRecord.CreateAsync(saleRecord);
+                        if (created == null)
+                            continue;
 
-                        if (dto.FeedSalesUnitId.HasValue && feedSalesUnit == null)
+                        importedIds.Add(created.Id);
+
+                        if (dto.SalesType == Domain.Enums.SalesTypeEnum.Feed)
                         {
-                            result.SetError("Invalid Feed Sales Unit", $"FeedSalesUnitId {dto.FeedSalesUnitId} is invalid");
-                            return result;
-                        }
-                        if (feedSalesUnit == null)
-                        {
-                            result.SetError("Invalid Feed Sales Unit", $"FeedSalesUnitId {dto.FeedSalesUnitId} is invalid");
-                            return result;
-                        }
+                            var feedSalesUnit = dto.FeedSalesUnitId.HasValue
+                                ? await _feedSalesUnit.GetByIdAsync(dto.FeedSalesUnitId.Value)
+                                : null;
 
-                        var unitQuantity = feedSalesUnit.unitQuantity;
-
-                        // Update TotalSales
-                        var totalSales = await _totalSales.GetSingleAsync(x => x.FeedBrand == dto.FeedBrand);
-                        if (totalSales == null)
-                        {
-                            totalSales = new TotalSales
+                            if (dto.FeedSalesUnitId.HasValue && feedSalesUnit == null)
                             {
-                                Code = RandomGenerator.RandomString(10),
-                                FeedBrand = dto.FeedBrand ?? throw new ArgumentNullException(nameof(dto.FeedBrand)),
-                                BagsSold = unitQuantity,
-                                Amount = dto.Price,
-                                Profit = FeedProfitCalculator.CalculateProfit(dto.FeedBrand.ToString(), feedSalesUnit.unitName, dto.Quantity, dto.Price)
-                            };
-                            await _totalSales.CreateAsync(totalSales);
-                        }
-                        else
-                        {
+                                result.SetError("Invalid Feed Sales Unit", $"FeedSalesUnitId {dto.FeedSalesUnitId} is invalid");
+                                return result;
+                            }
+
+                            var unitQuantity = feedSalesUnit?.unitQuantity ?? 0;
+
+                            // Update TotalSales
                             totalSales.BagsSold += unitQuantity;
                             totalSales.Amount += dto.Price;
-                            totalSales.Profit += FeedProfitCalculator.CalculateProfit(dto.FeedBrand.ToString(), feedSalesUnit.unitName, dto.Quantity, dto.Price);
-                            await _totalSales.UpdateAsync(totalSales.Id, totalSales);
-                        }
+                            totalSales.Profit += await _feedProfitCalculator.CalculateProfit(
+                                dto.FeedBrand.ToString(),
+                                feedSalesUnit?.unitName,
+                                dto.Quantity,
+                                dto.Price);
 
-                        // Update FeedLog
-                        if (feedLog == null)
-                        {
-                            feedLog = new FeedLog
+                            // Update FeedLog
+                            var feedLog = await _feedLog.GetSingleAsync(x => x.FeedBrand == feedBrand);
+                            if (feedLog == null)
                             {
-                                Code = RandomGenerator.RandomString(10),
-                                FeedBrand = dto.FeedBrand ?? throw new ArgumentNullException(nameof(dto.FeedBrand)),
-                                BagsSold = unitQuantity,
-                                BagsBought = 0,
-                                AvailableBags = 0 - unitQuantity
-                            };
-                            await _feedLog.CreateAsync(feedLog);
+                                feedLog = new FeedLog
+                                {
+                                    Code = RandomGenerator.RandomString(10),
+                                    FeedBrand = feedBrand,
+                                    BagsSold = unitQuantity,
+                                    BagsBought = 0,
+                                    AvailableBags = 0 - unitQuantity
+                                };
+                                await _feedLog.CreateAsync(feedLog);
+                            }
+                            else
+                            {
+                                feedLog.BagsSold += unitQuantity;
+                                feedLog.AvailableBags = feedLog.BagsBought - feedLog.BagsSold;
+                                await _feedLog.UpdateAsync(feedLog.Id, feedLog);
+                            }
                         }
-                        else
-                        {
-                            feedLog.BagsSold += unitQuantity;
-                            feedLog.AvailableBags = feedLog.BagsBought - feedLog.BagsSold;
-                            await _feedLog.UpdateAsync(feedLog.Id, feedLog);
-                        }
+                    }
+
+                    // Save TotalSales (create or update)
+                    if (isNewTotalSales)
+                    {
+                        await _totalSales.CreateAsync(totalSales);
+                        existingTotalSales[feedBrand] = totalSales; // Add to dictionary for reference
+                    }
+                    else
+                    {
+                        await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
                 }
 
                 await _context.SaveChangesAsync();
-
                 result.SetSuccess(importedIds, "Sales records imported successfully.");
             }
             catch (Exception ex)

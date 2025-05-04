@@ -1,5 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using ChickTrack.Domain.Enums;
+﻿using ChickTrack.Domain.Enums;
 using Lagetronix.Rapha.Base.Common.Domain.Entities;
 
 namespace ChickTrack.Domain.Entities.Poultry

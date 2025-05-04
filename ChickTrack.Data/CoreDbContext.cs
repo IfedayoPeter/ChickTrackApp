@@ -14,6 +14,8 @@ namespace ChickTrack.Data
         public DbSet<FeedInventory> FeedInventories { get; set; }
         public DbSet<FeedLog> FeedLogs { get; set; }
         public DbSet<FeedSalesUnit> FeedSalesUnits { get; set; }
+        public DbSet<FeedPrice> FeedPrices { get; set; }
+        public DbSet<FeedUnitPrice> FeedUnitPrices { get; set; }
 
         //Financials
         public DbSet<Investment> Investments { get; set; }
@@ -38,6 +40,12 @@ namespace ChickTrack.Data
                 .HasKey(x => x.Id);
             builder.Entity<FeedSalesUnit>()
                 .ToTable("FeedSalesUnits")
+                .HasKey(x => x.Id);
+            builder.Entity<FeedPrice>()
+                .ToTable("FeedPrices")
+                .HasKey(x => x.Id);
+            builder.Entity<FeedUnitPrice>()
+                .ToTable("FeedUnitPrices")
                 .HasKey(x => x.Id);
 
             // Financials

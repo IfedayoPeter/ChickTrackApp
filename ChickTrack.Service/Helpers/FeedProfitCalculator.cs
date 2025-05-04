@@ -1,50 +1,92 @@
-﻿namespace ChickTrack.Service.Helpers
+﻿using ChickTrack.Domain.Entities.Feed;
+using ChickTrack.Service.Interfaces.Feed;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace ChickTrack.Service.Helpers
 {
     public class FeedProfitCalculator
     {
-        private static readonly Dictionary<string, decimal> FeedPricesPerBag = new Dictionary<string, decimal>
-    {
-        { "NewHopeStarter", 27700 },
-        { "NewHopeLayer", 19900 },
-        { "TopFeedGrower", 19600 },
-        { "TopFeedFinisher", 21800 }
-    };
+        private readonly IFeedPriceService _feedPriceService;
+        private readonly IFeedUnitPriceService _feedUnitPriceService;
+        private readonly IFeedSalesUnitService _feedSalesUnitService;
+        private readonly IMemoryCache _cache;
 
-        private static readonly Dictionary<string, decimal> FeedUnitConversion = new Dictionary<string, decimal>
-    {
-        { "Cup", 0.0078125m },
-        { "Half Derica", 0.015625m },
-        { "Derica", 0.03125m },
-        { "Half Paint", 0.0625m },
-        { "Paint", 0.125m },
-        { "Bag", 1.0m }
-    };
+        private const string PricesCacheKey = "FeedPricesData";
+        private const string UnitPricesCacheKey = "FeedUnitPricesData";
+        private const string UnitConversionCacheKey = "FeedUnitConversionData";
 
-        private static readonly Dictionary<string, Dictionary<string, decimal>> FeedUnitPrices = new Dictionary<string, Dictionary<string, decimal>>
-    {
-        { "NewHopeStarter", new Dictionary<string, decimal> { { "Cup", 250 }, { "Half Derica", 500 }, { "Derica", 950 }, { "Half Paint", 1850 }, { "Paint", 3700 } } },
-        { "NewHopeLayer", new Dictionary<string, decimal> { { "Cup", 200 }, { "Half Derica", 400 }, { "Derica", 750 }, { "Half Paint", 1500 }, { "Paint", 3000 } } },
-        { "TopFeedGrower", new Dictionary<string, decimal> { { "Cup", 200 }, { "Half Derica", 400 }, { "Derica", 800 }, { "Half Paint", 1600 }, { "Paint", 3200 } } },
-        { "TopFeedFinisher", new Dictionary<string, decimal> { { "Cup", 250 }, { "Half Derica", 450 }, { "Derica", 900 }, { "Half Paint", 1750 }, { "Paint", 3500 } } }
-    };
-
-        public static decimal CalculateProfit(string feedBrandName, string feedSalesUnitName, int quantity, decimal price)
+        public FeedProfitCalculator(
+            IFeedPriceService feedPriceService,
+            IFeedUnitPriceService feedUnitPriceService,
+            IFeedSalesUnitService feedSalesUnitService,
+            IMemoryCache cache)
         {
-            if (!FeedPricesPerBag.ContainsKey(feedBrandName) || !FeedUnitConversion.ContainsKey(feedSalesUnitName) ||
-                !FeedUnitPrices.ContainsKey(feedBrandName) || !FeedUnitPrices[feedBrandName].ContainsKey(feedSalesUnitName))
+            _feedPriceService = feedPriceService;
+            _feedUnitPriceService = feedUnitPriceService;
+            _feedSalesUnitService = feedSalesUnitService;
+            _cache = cache;
+        }
+
+        public async Task<decimal> CalculateProfit(string feedBrandName, string feedSalesUnitName, int quantity, decimal price)
+        {
+            // Get or set cache for unit conversions
+            var unitConversionResult = await _cache.GetOrCreateAsync(UnitConversionCacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1); // Cache for longer since these rarely change
+                return await _feedSalesUnitService.GetAllAsync<FeedSalesUnit>();
+            });
+
+            if (!unitConversionResult.IsSuccess || unitConversionResult.Content == null)
+            {
+                throw new InvalidOperationException("Failed to retrieve unit conversions: " +
+                                                 (unitConversionResult.Message ?? "Unknown error"));
+            }
+
+            // Create conversion dictionary from service response
+            var feedUnitConversion = unitConversionResult.Content
+                .ToDictionary(x => x.unitName, x => x.unitQuantity);
+
+            // Rest of your existing code with the dynamic feedUnitConversion
+            var feedPricesResult = await _cache.GetOrCreateAsync(PricesCacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                return await _feedPriceService.GetActivePricesAsync();
+            });
+
+            if (!feedPricesResult.IsSuccess || feedPricesResult.Content == null)
+            {
+                throw new InvalidOperationException("Failed to retrieve feed prices: " +
+                                                 (feedPricesResult.Message ?? "Unknown error"));
+            }
+
+            var unitPricesResult = await _cache.GetOrCreateAsync(UnitPricesCacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                return await _feedUnitPriceService.GetActivePricesAsync();
+            });
+
+            if (!unitPricesResult.IsSuccess || unitPricesResult.Content == null)
+            {
+                throw new InvalidOperationException("Failed to retrieve unit prices: " +
+                                                 (unitPricesResult.Message ?? "Unknown error"));
+            }
+
+            // Find prices
+            var bagPrice = feedPricesResult.Content
+                .FirstOrDefault(x => x.FeedBrand == feedBrandName)?.PricePerBag;
+
+            var unitPrice = unitPricesResult.Content
+                .FirstOrDefault(x => x.FeedBrand == feedBrandName && x.UnitName == feedSalesUnitName)?.Price;
+
+            if (bagPrice == null || unitPrice == null || !feedUnitConversion.ContainsKey(feedSalesUnitName))
             {
                 throw new ArgumentException("Invalid feed brand or sales unit.");
             }
 
-            decimal bagPrice = FeedPricesPerBag[feedBrandName];
-            decimal unitFraction = FeedUnitConversion[feedSalesUnitName];
-            decimal costPricePerUnit = bagPrice * unitFraction;
-            decimal normalSellingPricePerUnit = FeedUnitPrices[feedBrandName][feedSalesUnitName];
+            decimal costPricePerUnit = bagPrice.Value * feedUnitConversion[feedSalesUnitName];
+            decimal sellingPricePerUnit = price > 0 ? price / quantity : unitPrice.Value;
+            var profit = (sellingPricePerUnit - costPricePerUnit) * quantity;
 
-            decimal sellingPricePerUnit = price > 0 ? price / quantity : normalSellingPricePerUnit;
-            decimal profitPerUnit = sellingPricePerUnit - costPricePerUnit;
-
-            var profit = profitPerUnit * quantity;
             return profit;
         }
     }

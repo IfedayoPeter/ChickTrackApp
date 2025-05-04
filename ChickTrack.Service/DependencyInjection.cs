@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ChickTrack.Service.Helpers;
 using ChickTrack.Service.Implementations.Feed;
 using ChickTrack.Service.Implementations.Financial;
 using ChickTrack.Service.Implementations.Poultry;
@@ -18,6 +19,9 @@ namespace ChickTrack.Service
             services.AddScoped<IFeedInventoryService, FeedInventoryService>();
             services.AddScoped<IFeedLogService, FeedLogService>();
             services.AddScoped<IFeedSalesUnitService, FeedSalesUnitService>();
+            services.AddScoped<IFeedUnitPriceService, FeedUnitPriceService>();
+            services.AddScoped<IFeedPriceService, FeedPriceService>();
+            services.AddScoped<FeedProfitCalculator>();
 
             //Financials
             services.AddScoped<IExpensesService, ExpensesService>();

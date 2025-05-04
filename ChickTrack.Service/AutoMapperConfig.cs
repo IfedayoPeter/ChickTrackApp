@@ -28,6 +28,10 @@ namespace ChickTrack.Service
                 .ReverseMap();
             CreateMap<FeedSalesUnit, FeedSalesUnitDto>()
                 .ReverseMap();
+            CreateMap<FeedPrice, FeedPriceDto>()
+                .ReverseMap();
+            CreateMap<FeedUnitPrice, FeedUnitPriceDto>()
+                .ReverseMap();
 
             //Financials
             CreateMap<Expense, ExpenseDto>()
