@@ -1,5 +1,6 @@
 ﻿using ChickTrack.Domain.Entities.Feed;
 using ChickTrack.Service.Interfaces.Feed;
+using Lagetronix.Rapha.Base.Common.Domain.Common;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace ChickTrack.Service.Helpers
@@ -27,26 +28,28 @@ namespace ChickTrack.Service.Helpers
             _cache = cache;
         }
 
-        public async Task<decimal> CalculateProfit(string feedBrandName, string feedSalesUnitName, int quantity, decimal price)
+        public async Task<Result<decimal>> CalculateProfit(string feedBrandName, string feedSalesUnitName, int quantity, decimal price)
         {
-            // Get or set cache for unit conversions
+            var result = new Result<decimal>(false);
+
+            // Get or set cache for unit conversions  
             var unitConversionResult = await _cache.GetOrCreateAsync(UnitConversionCacheKey, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1); // Cache for longer since these rarely change
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1); // Cache for longer since these rarely change  
                 return await _feedSalesUnitService.GetAllAsync<FeedSalesUnit>();
             });
 
             if (!unitConversionResult.IsSuccess || unitConversionResult.Content == null)
             {
-                throw new InvalidOperationException("Failed to retrieve unit conversions: " +
-                                                 (unitConversionResult.Message ?? "Unknown error"));
+                result.SetError("Failed to retrieve unit conversions", unitConversionResult.Message);
+                return result;
             }
 
-            // Create conversion dictionary from service response
+            // Create conversion dictionary from service response  
             var feedUnitConversion = unitConversionResult.Content
                 .ToDictionary(x => x.unitName, x => x.unitQuantity);
 
-            // Rest of your existing code with the dynamic feedUnitConversion
+            // Rest of your existing code with the dynamic feedUnitConversion  
             var feedPricesResult = await _cache.GetOrCreateAsync(PricesCacheKey, async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
@@ -55,8 +58,8 @@ namespace ChickTrack.Service.Helpers
 
             if (!feedPricesResult.IsSuccess || feedPricesResult.Content == null)
             {
-                throw new InvalidOperationException("Failed to retrieve feed prices: " +
-                                                 (feedPricesResult.Message ?? "Unknown error"));
+                result.SetError("Failed to retrieve feed prices", feedPricesResult.Message);
+                return result;
             }
 
             var unitPricesResult = await _cache.GetOrCreateAsync(UnitPricesCacheKey, async entry =>
@@ -67,11 +70,11 @@ namespace ChickTrack.Service.Helpers
 
             if (!unitPricesResult.IsSuccess || unitPricesResult.Content == null)
             {
-                throw new InvalidOperationException("Failed to retrieve unit prices: " +
-                                                 (unitPricesResult.Message ?? "Unknown error"));
+                result.SetError("Failed to retrieve unit prices", unitPricesResult.Message);
+                return result;
             }
 
-            // Find prices
+            // Find prices  
             var bagPrice = feedPricesResult.Content
                 .FirstOrDefault(x => x.FeedBrand == feedBrandName)?.PricePerBag;
 
@@ -80,14 +83,17 @@ namespace ChickTrack.Service.Helpers
 
             if (bagPrice == null || unitPrice == null || !feedUnitConversion.ContainsKey(feedSalesUnitName))
             {
-                throw new ArgumentException("Invalid feed brand or sales unit.");
+                result.SetError("Invalid feed brand or sales unit", "The specified feed brand or sales unit does not exist.");
+                return result;
             }
 
             decimal costPricePerUnit = bagPrice.Value * feedUnitConversion[feedSalesUnitName];
             decimal sellingPricePerUnit = price > 0 ? price / quantity : unitPrice.Value;
             var profit = (sellingPricePerUnit - costPricePerUnit) * quantity;
 
-            return profit;
+            result.IsSuccess = true;
+            result.Content = profit;
+            return result;
         }
     }
 }

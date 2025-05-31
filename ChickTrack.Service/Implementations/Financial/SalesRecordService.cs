@@ -73,7 +73,7 @@ namespace ChickTrack.Service.Implementations.Financial
                             FeedBrand = saleRecordDto.FeedBrand.HasValue ? saleRecordDto.FeedBrand.Value : throw new ArgumentNullException(nameof(saleRecordDto.FeedBrand)),
                             BagsSold = existingSalesRecord.FeedSalesUnit.unitQuantity,
                             Amount = saleRecordDto.Price,
-                            Profit = await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecord.Quantity, saleRecord.Price)
+                            Profit = (await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString() ?? string.Empty, existingSalesRecord.FeedSalesUnit.unitName, saleRecord.Quantity, saleRecord.Price)).Content
                         };
                         await _totalSales.CreateAsync(totalSales);
                     }
@@ -81,10 +81,9 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold += existingSalesRecord.FeedSalesUnit.unitQuantity;
                         totalSales.Amount += saleRecordDto.Price;
-                        totalSales.Profit += await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), existingSalesRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
+                        totalSales.Profit += (await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString() ?? string.Empty, existingSalesRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price)).Content;
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
-
 
                     if (feedLog != null)
                     {
@@ -144,7 +143,7 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold -= existingSale.FeedSalesUnit.unitQuantity;
                         totalSales.Amount -= existingSale.Price;
-                        totalSales.Profit -= await _feedProfitCalculator.CalculateProfit(existingSale.FeedBrand.ToString(), existingSale.FeedSalesUnit.unitName, existingSale.Quantity, existingSale.Price);
+                        totalSales.Profit -= (await _feedProfitCalculator.CalculateProfit(existingSale.FeedBrand.ToString(), existingSale.FeedSalesUnit.unitName, existingSale.Quantity, existingSale.Price)).Content;
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
@@ -170,7 +169,7 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold += updatedRecord.FeedSalesUnit.unitQuantity;
                         totalSales.Amount += saleRecordDto.Price;
-                        totalSales.Profit += await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), updatedRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price);
+                        totalSales.Profit += (await _feedProfitCalculator.CalculateProfit(saleRecordDto.FeedBrand.ToString(), updatedRecord.FeedSalesUnit.unitName, saleRecordDto.Quantity, saleRecordDto.Price)).Content;
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
@@ -213,7 +212,7 @@ namespace ChickTrack.Service.Implementations.Financial
                     {
                         totalSales.BagsSold -= sale.FeedSalesUnit.unitQuantity;
                         totalSales.Amount -= sale.Price;
-                        totalSales.Profit -= await _feedProfitCalculator.CalculateProfit(sale.FeedBrand.ToString(), sale.FeedSalesUnit.unitName, sale.Quantity, sale.Price);
+                        totalSales.Profit -= (await _feedProfitCalculator.CalculateProfit(sale.FeedBrand.ToString(), sale.FeedSalesUnit.unitName, sale.Quantity, sale.Price)).Content;
                         await _totalSales.UpdateAsync(totalSales.Id, totalSales);
                     }
 
@@ -310,11 +309,11 @@ namespace ChickTrack.Service.Implementations.Financial
                             // Update TotalSales
                             totalSales.BagsSold += unitQuantity;
                             totalSales.Amount += dto.Price;
-                            totalSales.Profit += await _feedProfitCalculator.CalculateProfit(
+                            totalSales.Profit += (await _feedProfitCalculator.CalculateProfit(
                                 dto.FeedBrand.ToString(),
                                 feedSalesUnit?.unitName,
                                 dto.Quantity,
-                                dto.Price);
+                                dto.Price)).Content;
 
                             // Update FeedLog
                             var feedLog = await _feedLog.GetSingleAsync(x => x.FeedBrand == feedBrand);
