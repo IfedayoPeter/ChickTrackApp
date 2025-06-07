@@ -35,7 +35,7 @@ namespace ChickTrack.Service.Helpers
             // Get or set cache for unit conversions  
             var unitConversionResult = await _cache.GetOrCreateAsync(UnitConversionCacheKey, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1); // Cache for longer since these rarely change  
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1); // Cache for longer since these rarely change  
                 return await _feedSalesUnitService.GetAllAsync<FeedSalesUnit>();
             });
 
@@ -52,7 +52,7 @@ namespace ChickTrack.Service.Helpers
             // Rest of your existing code with the dynamic feedUnitConversion  
             var feedPricesResult = await _cache.GetOrCreateAsync(PricesCacheKey, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
                 return await _feedPriceService.GetActivePricesAsync();
             });
 
@@ -64,7 +64,7 @@ namespace ChickTrack.Service.Helpers
 
             var unitPricesResult = await _cache.GetOrCreateAsync(UnitPricesCacheKey, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
                 return await _feedUnitPriceService.GetActivePricesAsync();
             });
 

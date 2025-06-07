@@ -304,7 +304,7 @@ namespace ChickTrack.Service.Implementations.Financial
                                 return result;
                             }
 
-                            var unitQuantity = feedSalesUnit?.unitQuantity ?? 0;
+                            var unitQuantity = feedSalesUnit?.unitQuantity * dto.Quantity ?? 0;
 
                             // Update TotalSales
                             totalSales.BagsSold += unitQuantity;
