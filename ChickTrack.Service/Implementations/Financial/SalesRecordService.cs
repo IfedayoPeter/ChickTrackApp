@@ -181,6 +181,7 @@ namespace ChickTrack.Service.Implementations.Financial
                         await _feedLog.UpdateAsync(feedLog.Id, feedLog);
                     }
                 }
+                await _context.SaveChangesAsync();
 
                 result.SetSuccess(_mapper.Map<SaleRecordDto>(existingSale), "Sale record updated successfully!");
             }
