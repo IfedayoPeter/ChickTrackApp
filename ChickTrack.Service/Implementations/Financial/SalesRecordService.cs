@@ -1,17 +1,4 @@
-﻿using AutoMapper;
-using ChickTrack.Domain.DataTransferObjects.Financial.CreateDtos;
-using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
-using ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos;
-using ChickTrack.Domain.Entities.Feed;
-using ChickTrack.Domain.Entities.Financials;
-using ChickTrack.Service.Helpers;
-using ChickTrack.Service.Interfaces.Feed;
-using ChickTrack.Service.Interfaces.Financial;
-using Lagetronix.Rapha.Base.Common.Domain.Common;
-using Lagetronix.Rapha.Base.Common.Domain.Utilities;
-using Lagetronix.Rapha.Base.Common.Repositories;
-using Lagetronix.Rapha.Base.Common.Repositories.Interfaces;
-using Lagetronix.Rapha.Base.Common.Services.Implementation;
+﻿
 
 namespace ChickTrack.Service.Implementations.Financial
 {

@@ -1,4 +1,4 @@
-namespace ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos
+namespace Domain.DataTransferObjects.Poultry.GetDtos
 {
     public class EggInventoryDto
     {

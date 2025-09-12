@@ -1,7 +1,7 @@
-﻿using ChickTrack.Domain.Enums;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
+﻿
 
-namespace ChickTrack.Domain.Entities.Feed
+
+namespace Domain.Entities.Feed
 {
     public class FeedInventory : BaseEntity<long>
     {

@@ -1,7 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
-
-namespace ChickTrack.Domain.Entities.Financials
+﻿namespace Domain.Entities.Financials
 {
     public class Investment : BaseEntity<long>
     {

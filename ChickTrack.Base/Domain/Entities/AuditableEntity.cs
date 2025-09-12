@@ -1,8 +1,8 @@
-﻿namespace Lagetronix.Rapha.Base.Common.Domain.Entities;
+﻿namespace Base.Domain.Entities;
 
 public class AuditableEntity
 {
-    public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public DateTime CreatedOn { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -10,7 +10,6 @@ public class AuditableEntity
 
     public string? LastModifiedBy { get; set; }
 
-    //public bool? IsActive { get; set; } = true;
-
-    //public bool? IsDeleted { get; set; } = false;
+    public bool? IsActive { get; set; } = true;
+    public bool? IsDeleted { get; set; } = false;
 }

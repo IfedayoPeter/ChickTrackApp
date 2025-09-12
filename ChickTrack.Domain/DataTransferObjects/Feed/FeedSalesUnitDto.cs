@@ -1,4 +1,4 @@
-namespace ChickTrack.Domain.DataTransferObjects.Feed
+namespace Domain.DataTransferObjects.Feed
 {
     public class FeedSalesUnitDto
     {

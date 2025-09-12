@@ -1,11 +1,6 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Poultry;
-using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
-using ChickTrack.Domain.Entities.Poultry;
-using ChickTrack.Service.Interfaces.Poultry;
-using Lagetronix.Rapha.Base.Common.Presentation;
-using Microsoft.AspNetCore.Mvc;
+﻿
 
-namespace ChickTrack.API.Controllers
+namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

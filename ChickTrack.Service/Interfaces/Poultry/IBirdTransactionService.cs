@@ -1,10 +1,4 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
-using ChickTrack.Domain.DataTransferObjects.Poultry;
-using ChickTrack.Domain.Entities.Poultry;
-using Lagetronix.Rapha.Base.Common.Domain.Common;
-using Lagetronix.Rapha.Base.Common.Services.Interface;
-
-namespace ChickTrack.Service.Interfaces.Poultry
+﻿namespace ChickTrack.Service.Interfaces.Poultry
 {
     public interface IBirdTransactionService : IMSSQLBaseService<BirdTransaction, long>
     {

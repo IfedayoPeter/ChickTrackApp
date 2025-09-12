@@ -1,4 +1,4 @@
-﻿namespace Lagetronix.Rapha.Base.Common.Repositories
+﻿namespace Base.Repositories
 {
     public interface IApplicationDbContext
     {

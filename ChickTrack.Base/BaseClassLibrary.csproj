@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Base.Library</PackageId>
-    <Version>1.0.0</Version>
-    <Author>Onibudo Victor</Author>
+    <Version>2.0.0</Version>
+	<Author>Ifedayo Awoniyi</Author>
     <Product>Base Library</Product>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

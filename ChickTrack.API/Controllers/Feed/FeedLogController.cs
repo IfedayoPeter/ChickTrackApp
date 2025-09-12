@@ -1,10 +1,7 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Feed;
-using ChickTrack.Domain.Entities.Feed;
-using ChickTrack.Service.Interfaces.Feed;
-using Lagetronix.Rapha.Base.Common.Presentation;
+﻿using Base.Presentation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChickTrack.API.Controllers.Feed
+namespace API.Controllers.Feed
 {
     [Route("api/[controller]")]
     [ApiController]

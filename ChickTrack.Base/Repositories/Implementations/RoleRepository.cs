@@ -1,9 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using ChickTrack.Base.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-
-namespace ChickTrack.Base.Repositories.Implementations
+﻿namespace Base.Repositories.Implementations
 {
     public class RoleRepository : IRoleRepository
     {

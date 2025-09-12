@@ -1,11 +1,4 @@
-﻿using AutoMapper;
-using ChickTrack.Domain.Entities.Financials;
-using ChickTrack.Service.Interfaces.Financial;
-using Lagetronix.Rapha.Base.Common.Repositories;
-using Lagetronix.Rapha.Base.Common.Repositories.Interfaces;
-using Lagetronix.Rapha.Base.Common.Services.Implementation;
-
-namespace ChickTrack.Service.Implementations.Financial
+﻿namespace ChickTrack.Service.Implementations.Financial
 {
     public class TotalSalesService : MSSQLBaseService<TotalSales, long>, ITotalSalesService
     {

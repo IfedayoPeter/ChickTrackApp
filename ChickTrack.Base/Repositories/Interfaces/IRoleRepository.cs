@@ -1,4 +1,4 @@
-﻿namespace ChickTrack.Base.Repositories.Interfaces
+﻿namespace Base.Repositories.Interfaces
 {
     public interface IRoleRepository
     {

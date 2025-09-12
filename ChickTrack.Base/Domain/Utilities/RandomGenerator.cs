@@ -1,4 +1,4 @@
-﻿namespace Lagetronix.Rapha.Base.Common.Domain.Utilities;
+﻿namespace Base.Common.Domain.Utilities;
 
 public class RandomGenerator
 {

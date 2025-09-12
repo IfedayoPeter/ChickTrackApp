@@ -1,6 +1,6 @@
-﻿using ChickTrack.Domain.Enums;
+﻿
 
-namespace ChickTrack.Domain.DataTransferObjects.Feed
+namespace Domain.DataTransferObjects.Feed
 {
     public class FeedPriceDto
     {

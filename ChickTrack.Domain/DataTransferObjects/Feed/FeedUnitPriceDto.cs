@@ -1,6 +1,6 @@
-﻿using ChickTrack.Domain.Enums;
+﻿using Domain.Enums;
 
-namespace ChickTrack.Domain.DataTransferObjects.Feed
+namespace Domain.DataTransferObjects.Feed
 {
     public class FeedUnitPriceDto
     {
@@ -9,7 +9,7 @@ namespace ChickTrack.Domain.DataTransferObjects.Feed
         public FeedBrandEnum FeedBrandEnum { get; set; }
         public string FeedBrand { get { return FeedBrandEnum.ToString(); } }
         public FeedUnitEnum FeedUnitEnum { get; set; }
-        public string UnitName { get{ return FeedUnitEnum.ToString(); }} 
+        public string UnitName { get { return FeedUnitEnum.ToString(); } }
         public decimal Price { get; set; }
         public DateTime EffectiveDate { get; set; }
         public bool IsActive { get; set; }

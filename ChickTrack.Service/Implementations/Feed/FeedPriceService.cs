@@ -1,15 +1,6 @@
-﻿using AutoMapper;
-using ChickTrack.Domain.DataTransferObjects.Feed;
-using ChickTrack.Domain.Entities.Feed;
-using ChickTrack.Service.Interfaces.Feed;
-using Lagetronix.Rapha.Base.Common.Domain.Common;
-using Lagetronix.Rapha.Base.Common.Repositories;
-using Lagetronix.Rapha.Base.Common.Repositories.Interfaces;
-using Lagetronix.Rapha.Base.Common.Services.Implementation;
-
-namespace ChickTrack.Service.Implementations.Feed
+﻿namespace ChickTrack.Service.Implementations.Feed
 {
-    public class FeedPriceService : MSSQLBaseService<FeedPrice,long>, IFeedPriceService
+    public class FeedPriceService : MSSQLBaseService<FeedPrice, long>, IFeedPriceService
     {
         private readonly IMSSQLRepository<FeedPrice, long> _feedPrice;
         private readonly IMapper _mapper;
@@ -49,5 +40,5 @@ namespace ChickTrack.Service.Implementations.Feed
             return result;
         }
     }
-    
+
 }

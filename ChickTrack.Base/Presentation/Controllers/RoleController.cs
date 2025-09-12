@@ -1,7 +1,4 @@
-﻿using ChickTrack.Base.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-
-namespace ChickTrack.Base.Presentation.Controllers
+﻿namespace Base.Presentation.Controllers
 {
     [Authorize(Policy = "AdminOnly")]
     [Route("api/[controller]")]

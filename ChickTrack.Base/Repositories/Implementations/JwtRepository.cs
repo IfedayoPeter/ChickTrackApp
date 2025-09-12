@@ -1,12 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using ChickTrack.Base.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-
-namespace ChickTrack.Base.Repositories.Implementations
+﻿namespace Base.Repositories.Implementations
 {
     public class JwtRepository : IJwtRepository
     {

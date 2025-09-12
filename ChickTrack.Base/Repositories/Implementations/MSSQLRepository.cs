@@ -1,4 +1,4 @@
-﻿namespace Lagetronix.Rapha.Base.Repositories.Implementations
+﻿namespace Base.Repositories.Implementations
 {
     public class MSSQLRepository<T, I> : MSSQLBaseRepository<T, I>
     where T : BaseEntity<I>

@@ -1,4 +1,4 @@
-﻿using Lagetronix.Rapha.Base.Common.Repositories;
+﻿using Base.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

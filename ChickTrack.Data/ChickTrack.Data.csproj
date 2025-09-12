@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChickTrack.Base\ChickTrack.Base.csproj" />
+    <ProjectReference Include="..\ChickTrack.Base\BaseClassLibrary.csproj" />
     <ProjectReference Include="..\ChickTrack.Domain\ChickTrack.Domain.csproj" />
   </ItemGroup>
 

@@ -1,7 +1,4 @@
-﻿using ChickTrack.Domain.Entities.Feed;
-using ChickTrack.Domain.Entities.Financials;
-using ChickTrack.Domain.Entities.Poultry;
-using Microsoft.EntityFrameworkCore;
+﻿
 
 namespace ChickTrack.Data
 {

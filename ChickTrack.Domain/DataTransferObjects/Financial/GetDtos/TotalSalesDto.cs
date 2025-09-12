@@ -1,6 +1,6 @@
-using ChickTrack.Domain.Enums;
 
-namespace ChickTrack.Domain.DataTransferObjects.Financial.GetDtos
+
+namespace Domain.DataTransferObjects.Financial.GetDtos
 {
     public class TotalSalesDto
     {

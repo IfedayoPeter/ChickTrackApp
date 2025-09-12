@@ -1,4 +1,4 @@
-﻿namespace ChickTrack.Domain.Enums
+﻿namespace Domain.Enums
 {
     public enum ActionTypeEnum
     {

@@ -1,0 +1,15 @@
+﻿global using Base.Presentation;
+global using ChickTrack.Service.Interfaces.Feed;
+global using ChickTrack.Service.Interfaces.Financial;
+global using ChickTrack.Service.Interfaces.Poultry;
+global using Domain.DataTransferObjects.Feed;
+global using Domain.DataTransferObjects.Financial;
+global using Domain.DataTransferObjects.Financial.CreateDtos;
+global using Domain.DataTransferObjects.Financial.GetDtos;
+global using Domain.DataTransferObjects.Financial.UpdateDtos;
+global using Domain.DataTransferObjects.Poultry;
+global using Domain.DataTransferObjects.Poultry.GetDtos;
+global using Domain.Entities.Feed;
+global using Domain.Entities.Financials;
+global using Domain.Entities.Poultry;
+global using Microsoft.AspNetCore.Mvc;
