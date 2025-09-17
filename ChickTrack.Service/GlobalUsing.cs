@@ -22,3 +22,8 @@ global using Domain.DataTransferObjects.Poultry.GetDtos;
 global using Base.Services.Interface;
 global using Base.Services;
 global using Domain.DataTransferObjects.Financial;
+global using Microsoft.Extensions.Caching.Memory;
+global using ChickTrack.Service.Implementations.Feed;
+global using ChickTrack.Service.Implementations.Financial;
+global using ChickTrack.Service.Implementations.Poultry;
+global using Microsoft.Extensions.DependencyInjection;

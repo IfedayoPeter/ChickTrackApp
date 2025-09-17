@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Domain.DataTransferObjects.Feed
+﻿namespace Domain.DataTransferObjects.Feed
 {
     public class FeedUnitPriceDto
     {

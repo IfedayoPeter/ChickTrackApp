@@ -1,7 +1,4 @@
-﻿using Base.Presentation;
-using Microsoft.AspNetCore.Mvc;
-
-namespace API.Controllers.Feed
+﻿namespace API.Controllers.Feed
 {
     [Route("api/[controller]")]
     [ApiController]

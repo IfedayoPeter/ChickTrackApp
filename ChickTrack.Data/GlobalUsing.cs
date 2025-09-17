@@ -5,3 +5,5 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Design;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging;
+global using Base.Repositories;
+global using Microsoft.Extensions.DependencyInjection;

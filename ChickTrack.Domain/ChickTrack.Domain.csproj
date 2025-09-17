@@ -7,11 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataTransferObjects\Feed\CreateDtos\" />
-    <Folder Include="DataTransferObjects\Feed\GetDtos\" />
-    <Folder Include="DataTransferObjects\Feed\UpdateDtos\" />
-    <Folder Include="Entities\Dashboard\" />
-    <Folder Include="Entities\Personnels\" />
+    <Compile Remove="DataTransferObjects\Feed\CreateDtos\**" />
+    <Compile Remove="DataTransferObjects\Feed\GetDtos\**" />
+    <Compile Remove="DataTransferObjects\Feed\UpdateDtos\**" />
+    <Compile Remove="Entities\Dashboard\**" />
+    <Compile Remove="Entities\Personnels\**" />
+    <EmbeddedResource Remove="DataTransferObjects\Feed\CreateDtos\**" />
+    <EmbeddedResource Remove="DataTransferObjects\Feed\GetDtos\**" />
+    <EmbeddedResource Remove="DataTransferObjects\Feed\UpdateDtos\**" />
+    <EmbeddedResource Remove="Entities\Dashboard\**" />
+    <EmbeddedResource Remove="Entities\Personnels\**" />
+    <None Remove="DataTransferObjects\Feed\CreateDtos\**" />
+    <None Remove="DataTransferObjects\Feed\GetDtos\**" />
+    <None Remove="DataTransferObjects\Feed\UpdateDtos\**" />
+    <None Remove="Entities\Dashboard\**" />
+    <None Remove="Entities\Personnels\**" />
   </ItemGroup>
 
   <ItemGroup>

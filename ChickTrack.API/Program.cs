@@ -1,10 +1,4 @@
-using ChickTrack.Data;
-using ChickTrack.Service;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Scalar.AspNetCore;
-using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

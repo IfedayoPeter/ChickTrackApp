@@ -1,6 +1,4 @@
-﻿using Base.Domain.Common;
-using ChickTrack.Service.Interfaces.Feed;
-using Microsoft.Extensions.Caching.Memory;
+﻿
 
 namespace ChickTrack.Service.Helpers
 {

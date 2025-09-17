@@ -1,4 +1,4 @@
-﻿using BaseClassLibrary.Repositories.DatabaseSeeder.Data;
+﻿
 
 namespace BaseClassLibrary.Repositories.DatabaseSeeder
 {

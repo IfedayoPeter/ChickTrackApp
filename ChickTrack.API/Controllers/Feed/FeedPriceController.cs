@@ -14,7 +14,7 @@ namespace API.Controllers.Feed
         [HttpPost]
         public async Task<ActionResult> CreateFeedPrice([FromBody] FeedPriceDto request)
         {
-            var response = await CreateAsync (request);
+            var response = await CreateAsync(request);
             return Ok(response);
         }
 
