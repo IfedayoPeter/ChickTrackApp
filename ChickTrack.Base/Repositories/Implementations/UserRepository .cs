@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using ChickTrack.Base.Domain.Entities;
-using ChickTrack.Base.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
-
-namespace ChickTrack.Base.Repositories.Implementations
+﻿namespace Base.Repositories.Implementations
 {
     public class UserRepository : IUserRepository
     {

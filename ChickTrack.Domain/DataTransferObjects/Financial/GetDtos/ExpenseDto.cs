@@ -1,6 +1,6 @@
-using ChickTrack.Base.Domain.Entities;
 
-namespace ChickTrack.Domain.DataTransferObjects.Financial.GetDtos
+
+namespace Domain.DataTransferObjects.Financial.GetDtos
 {
     public class ExpenseDto
     {

@@ -1,8 +1,4 @@
-﻿using ChickTrack.Domain.Entities.Feed;
-using ChickTrack.Domain.Enums;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
-
-namespace ChickTrack.Domain.Entities.Financials
+﻿namespace Domain.Entities.Financials
 {
     public class SaleRecord : BaseEntity<long>
     {

@@ -1,6 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-
-namespace ChickTrack.Base.Repositories.Interfaces
+﻿namespace Base.Repositories.Interfaces
 {
     public interface IJwtRepository
     {

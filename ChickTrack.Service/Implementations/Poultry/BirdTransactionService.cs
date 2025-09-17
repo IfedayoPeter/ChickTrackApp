@@ -1,14 +1,4 @@
-﻿using AutoMapper;
-using ChickTrack.Domain.Entities.Poultry;
-using ChickTrack.Service.Interfaces.Poultry;
-using Lagetronix.Rapha.Base.Common.Repositories.Interfaces;
-using Lagetronix.Rapha.Base.Common.Repositories;
-using Lagetronix.Rapha.Base.Common.Services.Implementation;
-using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
-using ChickTrack.Domain.DataTransferObjects.Poultry;
-using ChickTrack.Domain.Enums;
-using Lagetronix.Rapha.Base.Common.Domain.Common;
-using Lagetronix.Rapha.Base.Common.Domain.Utilities;
+﻿
 
 namespace ChickTrack.Service.Implementations.Poultry
 {

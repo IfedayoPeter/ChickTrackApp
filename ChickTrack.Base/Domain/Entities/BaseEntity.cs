@@ -1,4 +1,4 @@
-﻿namespace Lagetronix.Rapha.Base.Common.Domain.Entities;
+﻿namespace Base.Domain.Entities;
 
 public class BaseEntity<T> : AuditableEntity
 {

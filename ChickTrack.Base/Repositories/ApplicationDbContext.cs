@@ -1,7 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-public class ApplicationDbContext : IdentityDbContext<BaseUser>, IApplicationDbContext
+﻿public class ApplicationDbContext : IdentityDbContext<BaseUser>, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

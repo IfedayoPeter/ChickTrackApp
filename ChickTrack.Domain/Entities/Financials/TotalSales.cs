@@ -1,8 +1,4 @@
-﻿using ChickTrack.Domain.Enums;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ChickTrack.Domain.Entities.Financials
+﻿namespace Domain.Entities.Financials
 {
     public class TotalSales : BaseEntity<long>
     {

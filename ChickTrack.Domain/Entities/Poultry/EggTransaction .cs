@@ -1,7 +1,4 @@
-﻿using ChickTrack.Domain.Enums;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
-
-namespace ChickTrack.Domain.Entities.Poultry
+﻿namespace Domain.Entities.Poultry
 {
     public class EggTransaction : BaseEntity<long>
     {

@@ -1,6 +1,5 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
-
-namespace ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos
+﻿
+namespace Domain.DataTransferObjects.Financial.UpdateDtos
 {
     public class UpdateInvestmentDto : CreateInvestmentDto
     {

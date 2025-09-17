@@ -1,7 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-
-namespace ChickTrack.Base.Repositories.Interfaces
+﻿namespace Base.Repositories.Interfaces
 {
     public interface IUserRepository
     {

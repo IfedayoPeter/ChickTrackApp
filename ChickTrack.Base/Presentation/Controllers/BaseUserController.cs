@@ -1,8 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using ChickTrack.Base.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-
-namespace ChickTrack.Base.Presentation.Controllers
+﻿namespace Base.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -122,7 +118,7 @@ namespace ChickTrack.Base.Presentation.Controllers
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
-        public string PhoneNumber {  get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public string? CreatedBy { get; set; }

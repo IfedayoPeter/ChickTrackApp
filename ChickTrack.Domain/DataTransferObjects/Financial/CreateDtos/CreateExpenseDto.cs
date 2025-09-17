@@ -1,6 +1,4 @@
-using ChickTrack.Base.Domain.Entities;
-
-namespace ChickTrack.Domain.DataTransferObjects.Financial
+namespace Domain.DataTransferObjects.Financial
 {
     public class CreateExpenseDto
     {

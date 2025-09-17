@@ -1,17 +1,4 @@
-﻿using AutoMapper;
-using ChickTrack.Domain.Entities.Poultry;
-using ChickTrack.Service.Interfaces.Poultry;
-using Lagetronix.Rapha.Base.Common.Repositories.Interfaces;
-using Lagetronix.Rapha.Base.Common.Repositories;
-using Lagetronix.Rapha.Base.Common.Services.Implementation;
-using ChickTrack.Domain.DataTransferObjects.Poultry.GetDtos;
-using Lagetronix.Rapha.Base.Common.Domain.Common;
-using Lagetronix.Rapha.Base.Common.Domain.Utilities;
-using ChickTrack.Domain.DataTransferObjects.Poultry;
-using ChickTrack.Domain.Enums;
-using Microsoft.Extensions.FileSystemGlobbing;
-
-namespace ChickTrack.Service.Implementations.Poultry
+﻿namespace ChickTrack.Service.Implementations.Poultry
 {
     public class EggTransactionService : MSSQLBaseService<EggTransaction, long>, IEggTransactionService
     {
@@ -101,7 +88,7 @@ namespace ChickTrack.Service.Implementations.Poultry
                     await _context.SaveChangesAsync();
                 }
 
-                    if (response == null)
+                if (response == null)
                 {
                     result.SetError($"{typeof(EggTransaction).Name} not created", $"{typeof(EggTransaction).Name} not created");
                 }

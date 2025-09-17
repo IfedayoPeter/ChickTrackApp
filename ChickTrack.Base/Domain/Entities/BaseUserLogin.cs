@@ -1,4 +1,4 @@
-﻿namespace ChickTrack.Base.Domain.Entities
+﻿namespace Base.Domain.Entities
 {
     public class BaseUserLogin
     {

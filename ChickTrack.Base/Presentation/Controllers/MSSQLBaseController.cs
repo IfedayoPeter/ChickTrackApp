@@ -1,4 +1,4 @@
-﻿namespace Lagetronix.Rapha.Base.Common.Presentation;
+﻿namespace Base.Presentation;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -12,11 +12,12 @@ public class MSSQLBaseController<TEntity, TResponse, TId> : ControllerBase
     }
 
     [HttpGet]
+    [Route("v1")]
     public virtual async Task<ActionResult> GetAllAsync(
-        [FromQuery] string search = null,   // Generic search across all properties
-        [FromQuery] string filter = null,  // Specific filtering (e.g., "Department=Accounting")
-        [FromQuery] int page = 1,           // Page number
-        [FromQuery] int pageSize = 100,      // Items per page
+        [FromQuery] string search = null,   
+        [FromQuery] string filter = null,  
+        [FromQuery] int page = 1,           
+        [FromQuery] int pageSize = 100,      
         [FromQuery] string select = null)
     {
         var result = new Result<dynamic>();
@@ -27,6 +28,34 @@ public class MSSQLBaseController<TEntity, TResponse, TId> : ControllerBase
         result = response;
         result.ResponseTime = DateTime.UtcNow;
         return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("v2")]
+    public virtual async Task<ActionResult> GetAllAsync(
+            [FromQuery] string search = null,   
+            [FromQuery] string filter = null,  
+            [FromQuery] int page = 1,           
+            [FromQuery] int pageSize = 100,      
+            [FromQuery] string select = null,
+            [FromQuery] string orderBy = null,
+            [FromQuery] OrderDirectionEnum orderDirection = OrderDirectionEnum.Asc)
+    {
+        var request = HttpContext.Request;
+
+        var baseUrl = $"{request.Scheme}://{request.Host}{request.Path}";
+
+        var requestTime = DateTime.UtcNow;
+        var response = await _service.GetAllAsync<TResponse>(search, filter, page, pageSize, select, orderBy, orderDirection, baseUrl);
+        var responseTime = DateTime.UtcNow;
+
+        response.RequestTime = requestTime;
+        response.ResponseTime = responseTime;
+
+        if (response.IsSuccess)
+            return Ok(response);
+        else
+            return BadRequest(response);
     }
 
     [HttpGet]
@@ -55,6 +84,23 @@ public class MSSQLBaseController<TEntity, TResponse, TId> : ControllerBase
         return result;
     }
 
+    protected async Task<ActionResult> AddEntitiesAsync<TRequest>([FromBody] TRequest[] request)
+    {
+
+        var requestTime = DateTime.UtcNow;
+        var response = await _service.AddEntitiesAsync<TResponse, TRequest>(request);
+        var responseTime = DateTime.UtcNow;
+
+        response.RequestTime = requestTime;
+        response.ResponseTime = responseTime;
+
+
+        if (response.IsSuccess)
+            return Ok(response);
+        else
+            return BadRequest(response);
+    }
+
     protected async Task<Result<bool>> UpdateAsync<TRequest>(TId id, [FromBody] TRequest request)
     {
         var result = new Result<bool>();
@@ -67,6 +113,21 @@ public class MSSQLBaseController<TEntity, TResponse, TId> : ControllerBase
         return result;
     }
 
+    protected async Task<ActionResult> UpdateAsync<TRequest>(List<TRequest> request)
+    {
+        var requestTime = DateTime.UtcNow;
+        var response = await _service.UpdateAsync(request);
+        var responseTime = DateTime.UtcNow;
+
+        response.RequestTime = requestTime;
+        response.ResponseTime = responseTime;
+
+
+        if (response.IsSuccess)
+            return Ok(response);
+        else
+            return BadRequest(response);
+    }
 
     protected async Task<Result<bool>> RemoveAsync(TId id)
     {
@@ -90,5 +151,15 @@ public class MSSQLBaseController<TEntity, TResponse, TId> : ControllerBase
         result = response;
         result.ResponseTime = DateTime.UtcNow;
         return Ok(result);
+    }
+
+    internal Error PopulateError(int code, string message, string type)
+    {
+        return new Error()
+        {
+            Code = code,
+            Message = message,
+            Type = type
+        };
     }
 }

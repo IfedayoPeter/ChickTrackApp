@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace ChickTrack.Base.Domain.Entities
+﻿namespace Base.Domain.Entities
 {
     public class BaseUser : IdentityUser
     {

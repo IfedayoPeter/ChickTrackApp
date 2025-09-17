@@ -1,4 +1,4 @@
-﻿namespace ChickTrack.Domain.DataTransferObjects.Financial.UpdateDtos
+﻿namespace Domain.DataTransferObjects.Financial.UpdateDtos
 {
     public class UpdateExpenseDto : CreateExpenseDto
     {

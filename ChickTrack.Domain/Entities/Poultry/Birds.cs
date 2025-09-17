@@ -1,7 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using Lagetronix.Rapha.Base.Common.Domain.Entities;
-
-namespace ChickTrack.Domain.Entities.Poultry
+﻿namespace Domain.Entities.Poultry
 {
     public class Birds : BaseEntity<long>
     {

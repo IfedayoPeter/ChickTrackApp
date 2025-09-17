@@ -1,10 +1,6 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Financial.GetDtos;
-using ChickTrack.Domain.Entities.Financials;
-using ChickTrack.Service.Interfaces.Financial;
-using Lagetronix.Rapha.Base.Common.Presentation;
-using Microsoft.AspNetCore.Mvc;
+﻿
 
-namespace ChickTrack.API.Controllers.Financial
+namespace API.Controllers.Financial
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,10 +1,5 @@
-﻿using ChickTrack.Domain.DataTransferObjects.Feed;
-using ChickTrack.Domain.Entities.Feed;
-using ChickTrack.Service.Interfaces.Feed;
-using Lagetronix.Rapha.Base.Common.Presentation;
-using Microsoft.AspNetCore.Mvc;
-
-namespace ChickTrack.API.Controllers.Feed
+﻿
+namespace API.Controllers.Feed
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,7 +14,7 @@ namespace ChickTrack.API.Controllers.Feed
         [HttpPost]
         public async Task<ActionResult> CreateFeedPrice([FromBody] FeedPriceDto request)
         {
-            var response = await CreateAsync (request);
+            var response = await CreateAsync(request);
             return Ok(response);
         }
 

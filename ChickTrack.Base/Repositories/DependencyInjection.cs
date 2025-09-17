@@ -1,10 +1,4 @@
-﻿using ChickTrack.Base.Domain.Entities;
-using ChickTrack.Base.Repositories.Implementations;
-using ChickTrack.Base.Repositories.Interfaces;
-using Lagetronix.Rapha.Base.Repositories.Implementations;
-using Microsoft.AspNetCore.Identity;
-
-public static class DependencyInjection
+﻿public static class DependencyInjection
 {
     public static IServiceCollection AddBaseRepositoryDependencies(this IServiceCollection services, IConfiguration configuration)
     {

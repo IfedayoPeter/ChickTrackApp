@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Lagetronix.Rapha.Base.Common.Domain.Entities;
+﻿namespace Base.Domain.Entities;
 
 public class AuditLog : BaseEntity<Guid>
 {
