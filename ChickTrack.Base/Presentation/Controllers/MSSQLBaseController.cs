@@ -31,7 +31,6 @@ public class MSSQLBaseController<TEntity, TResponse, TId> : ControllerBase
     }
 
     [HttpGet]
-    [Route("v2")]
     public virtual async Task<ActionResult> GetAllAsync(
             [FromQuery] string search = null,   
             [FromQuery] string filter = null,  
