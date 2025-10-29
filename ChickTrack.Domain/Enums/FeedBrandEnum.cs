@@ -10,5 +10,9 @@
         NewHopeGrower = 6,
         NewHopeFinisher = 7,
         NewHopeLayer = 8,
+        AdvarStarter = 9,
+        AdvarGrower = 10,
+        AdvarLayer = 11,
+        AdvarFinisher = 12
     }
 }

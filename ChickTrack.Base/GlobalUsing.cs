@@ -29,5 +29,4 @@ global using System.Security.Claims;
 global using System.Text;
 global using BaseClassLibrary.Domain.Entities;
 global using BaseClassLibrary.Domain.Enums;
-global using BaseClassLibrary.Repositories.DatabaseSeeder.Data;
 

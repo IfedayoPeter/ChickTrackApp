@@ -1,4 +1,7 @@
-﻿namespace BaseClassLibrary.Repositories.DatabaseSeeder.Data
+﻿using Base.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+
+namespace ChickTrack.Data.DatabaseSeeder.Data
 {
     internal class SuperAdminSeedData
     {

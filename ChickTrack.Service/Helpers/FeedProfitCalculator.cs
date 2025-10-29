@@ -32,7 +32,7 @@ namespace ChickTrack.Service.Helpers
             // Get or set cache for unit conversions  
             var unitConversionResult = await _cache.GetOrCreateAsync(UnitConversionCacheKey, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1); // Cache for longer since these rarely change  
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1); // Cache for longer since these rarely change  
                 return await _feedSalesUnitService.GetAllAsync<FeedSalesUnit>();
             });
 
