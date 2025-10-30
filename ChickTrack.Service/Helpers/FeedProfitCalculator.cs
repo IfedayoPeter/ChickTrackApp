@@ -74,6 +74,11 @@ namespace ChickTrack.Service.Helpers
             // Find prices  
             var bagPrice = feedPricesResult.Content
                 .FirstOrDefault(x => x.FeedBrand == feedBrandName)?.PricePerBag;
+            if (bagPrice == null)
+            {
+                result.SetError("No bag price", "Bag price for this feed brand has not been set");
+                return result;
+            }
 
             var unitPrice = unitPricesResult.Content
                 .FirstOrDefault(x => x.FeedBrand == feedBrandName && x.UnitName == feedSalesUnitName)?.Price;

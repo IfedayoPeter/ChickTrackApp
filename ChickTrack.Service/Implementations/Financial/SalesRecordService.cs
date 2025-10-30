@@ -297,11 +297,19 @@ namespace ChickTrack.Service.Implementations.Financial
                             // Update TotalSales
                             totalSales.BagsSold += unitQuantity;
                             totalSales.Amount += dto.Price;
-                            totalSales.Profit += (await _feedProfitCalculator.CalculateProfit(
+
+                            var profit = await _feedProfitCalculator.CalculateProfit(
                                 dto.FeedBrand.ToString(),
                                 feedSalesUnit?.unitName,
                                 dto.Quantity,
-                                dto.Price)).Content;
+                                dto.Price);
+
+                            if (!profit.IsSuccess)
+                            {
+                                result.SetError("Profit Calculation Failed", profit.Message);
+                                return result;
+                            }
+                            totalSales.Profit += profit.Content;
 
                             // Update FeedLog
                             var feedLog = await _feedLog.GetSingleAsync(x => x.FeedBrand == feedBrand);
