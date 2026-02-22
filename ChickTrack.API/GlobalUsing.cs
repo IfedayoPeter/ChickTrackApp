@@ -12,6 +12,7 @@ global using Domain.DataTransferObjects.Poultry.GetDtos;
 global using Domain.Entities.Feed;
 global using Domain.Entities.Financials;
 global using Domain.Entities.Poultry;
+global using Domain.Enums;
 global using Microsoft.AspNetCore.Mvc;
 global using ChickTrack.Data;
 global using ChickTrack.Service;

@@ -67,7 +67,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
-    builder.WithOrigins("https://chick-track.vercel.app", "http://localhost:5173", "https://localhost:5173")
+    builder.WithOrigins("https://chick-track.vercel.app", "http://localhost:5173", "https://localhost:5173", "http://localhost:5177", "https://localhost:5177")
            .AllowAnyMethod()
            .AllowAnyHeader()
            .AllowCredentials(); // Only needed if using authentication cookies

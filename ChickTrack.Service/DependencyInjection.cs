@@ -12,6 +12,7 @@ namespace ChickTrack.Service
             services.AddScoped<IFeedSalesUnitService, FeedSalesUnitService>();
             services.AddScoped<IFeedUnitPriceService, FeedUnitPriceService>();
             services.AddScoped<IFeedPriceService, FeedPriceService>();
+            services.AddScoped<IFeedMeasurementPriceService, FeedMeasurementPriceService>();
             services.AddScoped<FeedProfitCalculator>();
 
             //Financials
